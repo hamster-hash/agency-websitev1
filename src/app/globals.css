@@ -1,26 +1,385 @@
-@import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import "tailwindcss"; 
+
+/* ============================================================
+   GLOBAL STYLES — Agency Site
+   Design System: Dark Industrial × Editorial Luxury
+   
+   HOW TO TWEAK:
+   - Colors      → edit the :root CSS variables below
+   - Fonts       → change @import and --font-* variables
+   - Spacing     → edit --space-* scale
+   - Animations  → edit --duration-* and --ease-* variables
+   ============================================================ */
+
+/* --- Google Fonts Import ---
+   Display  : Playfair Display (editorial, intelligent)
+   Mono     : IBM Plex Mono   (engineer identity)
+   Body     : DM Sans         (clean, modern readability)
+   
+   TO CHANGE FONTS: replace the import URL and update the variables below */
+
+/* ============================================================
+   DESIGN TOKENS — Change these to retheme the entire site
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* --- Core Colors --- */
+  --color-bg:           #0A0A0A;   /* main background — near black */
+  --color-bg-2:         #111111;   /* slightly lighter panels */
+  --color-bg-3:         #181818;   /* card backgrounds */
+  --color-surface:      #1E1E1E;   /* elevated surfaces */
+  --color-border:       #2A2A2A;   /* subtle dividers */
+
+  --color-text-primary: #F0EDE6;   /* warm off-white — main text */
+  --color-text-dim:     #888882;   /* muted labels, captions */
+  --color-text-ghost:   #333330;   /* large ghost/watermark text */
+
+  /* --- Accent — Acid Yellow-Green (use SPARINGLY) ---
+     TO CHANGE ACCENT: swap this one value, everything updates */
+  --color-accent:       #C8F400;
+  --color-accent-dim:   rgba(200, 244, 0, 0.12);
+  --color-accent-glow:  rgba(200, 244, 0, 0.06);
+
+  /* --- Typography --- */
+  --font-display: 'Playfair Display', Georgia, serif;   /* big headlines */
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace; /* labels, tags */
+  --font-body:    'DM Sans', sans-serif;                /* body copy */
+
+  /* --- Type Scale --- */
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  2rem;       /* 32px */
+  --text-4xl:  2.75rem;    /* 44px */
+  --text-5xl:  3.75rem;    /* 60px */
+  --text-6xl:  5rem;       /* 80px */
+  --text-7xl:  7rem;       /* 112px */
+  --text-8xl:  10rem;      /* 160px — ghost/watermark numbers */
+
+  /* --- Spacing Scale --- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* --- Animation Timing --- */
+  --duration-fast:   0.2s;
+  --duration-base:   0.4s;
+  --duration-slow:   0.8s;
+  --duration-slower: 1.2s;
+  --ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:     cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* --- Layout --- */
+  --max-width:     1280px;
+  --nav-height:    72px;
+  --border-radius: 4px;   /* keep it sharp/industrial */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  /* IMPORTANT: overflow-x hidden needed for horizontal scroll sections */
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: none; /* hide default cursor — we use a custom one */
+  overflow-x: hidden;
+}
+
+/* Show default cursor on mobile (no hover = no custom cursor needed) */
+@media (max-width: 768px) {
+  body { cursor: auto; }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  cursor: none;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+@media (max-width: 768px) {
+  button { cursor: pointer; }
+}
+
+
+/* ============================================================
+   CUSTOM CURSOR
+   The cursor has two parts: a small dot + a larger trailing ring
+   TO DISABLE: remove <CustomCursor /> from layout.jsx
+   TO RESTYLE: tweak .cursor-dot and .cursor-ring below
+   ============================================================ */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width var(--duration-fast), height var(--duration-fast), opacity var(--duration-fast);
+  will-change: transform;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(200, 244, 0, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width var(--duration-base) var(--ease-out),
+              height var(--duration-base) var(--ease-out),
+              border-color var(--duration-base);
+  will-change: transform;
+}
+
+/* Cursor expands when hovering interactive elements */
+.cursor-ring.is-hovering {
+  width: 60px;
+  height: 60px;
+  border-color: var(--color-accent);
+}
+
+
+/* ============================================================
+   GRAIN OVERLAY
+   Adds subtle film grain texture over the entire site
+   TO REMOVE: delete <GrainOverlay /> from layout.jsx
+   TO ADJUST: change opacity value
+   ============================================================ */
+.grain-overlay {
+  position: fixed;
+  inset: -200%;
+  width: 400%;
+  height: 400%;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.035; /* ← tweak grain intensity here (0 = off, 0.08 = strong) */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  animation: grain 0.5s steps(2) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10%       { transform: translate(-2%, -3%); }
+  20%       { transform: translate(3%, 2%); }
+  30%       { transform: translate(-1%, 4%); }
+  40%       { transform: translate(4%, -1%); }
+  50%       { transform: translate(-3%, 3%); }
+  60%       { transform: translate(2%, -4%); }
+  70%       { transform: translate(-4%, 1%); }
+  80%       { transform: translate(3%, -2%); }
+  90%       { transform: translate(-2%, 4%); }
+}
+
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+
+/* Display — large editorial headlines */
+.text-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.text-display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+/* Mono — labels, tags, technical text */
+.text-mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+/* Accent highlight — the yellow-green pop */
+.text-accent { color: var(--color-accent); }
+.text-dim    { color: var(--color-text-dim); }
+
+/* Section label style */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 var(--space-6); }
+}
+
+/* Horizontal rule / divider */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+}
+
+
+/* ============================================================
+   BUTTON STYLES
+   ============================================================ */
+
+/* Primary CTA — terminal style */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.05em;
+  color: var(--color-bg);
+  background: var(--color-accent);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--border-radius);
+  transition: background var(--duration-fast), transform var(--duration-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  background: #d4ff1a; /* slightly brighter on hover — tweak this */
+  transform: translateY(-1px);
+}
+
+/* Ghost button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--border-radius);
+  transition: border-color var(--duration-fast), color var(--duration-fast);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+
+/* ============================================================
+   SCROLL-TRIGGERED ANIMATION CLASSES
+   GSAP will add/remove these — base state is "hidden"
+   ============================================================ */
+
+/* Elements start invisible, GSAP fades them in */
+.gsap-fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* For staggered children — apply to parent, GSAP staggers children */
+.gsap-stagger-children > * {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Horizontal scroll wrapper */
+.gsap-horizontal-wrapper {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+
+/* ============================================================
+   MARQUEE / TICKER
+   ============================================================ */
+.marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 25s linear infinite; /* ← change 25s to adjust speed */
+  gap: var(--space-8);
+}
+
+.marquee-track:hover {
+  animation-play-state: paused; /* pauses on hover */
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+
+/* ============================================================
+   SELECTION STYLE
+   ============================================================ */
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
 }

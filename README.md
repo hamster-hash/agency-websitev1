@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Agency Site — Setup & File Map
 
-## Getting Started
-
-First, run the development server:
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Dependencies
 
-## Learn More
+Only one non-Next.js package needed:
+```bash
+npm install gsap
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## File Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+agency-site/
+├── app/
+│   ├── layout.jsx          ← Root layout: grain + cursor
+│   └── page.jsx            ← Home page: section order
+│
+├── components/
+│   ├── ui/
+│   │   ├── CustomCursor.jsx     ← Two-part mouse cursor (dot + ring)
+│   │   └── GrainOverlay.jsx     ← Film grain texture overlay
+│   │
+│   └── sections/
+│       ├── HeroSection.jsx       ← Spotlight + word reveal + pin-scroll
+│       ├── DiagnosisSection.jsx  ← Horizontal scroll pain points
+│       ├── HowIHelpSection.jsx   ← Sticky left + staggered deliverables
+│       ├── PhilosophySection.jsx ← Editorial quote + marquee ticker
+│       ├── PackagesSection.jsx   ← Expandable offer cards
+│       └── CTASection.jsx        ← Final booking CTA
+│
+└── styles/
+    └── globals.css          ← All design tokens (colors, fonts, spacing)
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How to Customise
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Change Colors
+Edit `styles/globals.css` → `:root` block
+- `--color-accent` = the acid yellow-green (#C8F400) — change this one value to retheme
+
+### Change Copy
+Every section has a `CONTENT` block at the top — edit the arrays/constants there.
+
+### Change GSAP Timing
+Each section's `useEffect` has commented values explaining what controls speed.
+
+### Change Fonts  
+In `globals.css`:
+1. Change the `@import` URL to your new Google Fonts
+2. Update `--font-display`, `--font-mono`, `--font-body` variables
+
+### Add a Navbar
+1. Create `components/ui/Navbar.jsx`
+2. Import and add above `{children}` in `app/layout.jsx`
+
+### Connect your Calendly
+In `CTASection.jsx` → change `CTA_HREF` to your Calendly URL.
+
+---
+
+## GSAP ScrollTrigger Notes
+- `scrub: 1` → smooth lag follow (increase for more smoothness)
+- `pin: true` → freezes the section while animation plays
+- `start: 'top 75%'` → triggers when element top is 75% down viewport
+- Uncomment `// markers: true` in any section to debug trigger points
