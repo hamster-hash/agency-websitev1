@@ -29,7 +29,6 @@ const PACKAGES = [
     for:      'New consultant or service provider',
     name:     'The Startup Special',
     phases:   'Phase 1 + Phase 2',
-    price:    '$3,500',
     pitch:    'I will build your brand identity AND the automated system to handle your first 50 clients — so you never worry about the tech.',
     includes: [
       'ICP Workshop + Core Message Guide',
@@ -49,7 +48,6 @@ const PACKAGES = [
     for:      'Existing local business (dentist, café, gym)',
     name:     'Revenue Recovery',
     phases:   'Phase 2 + Review System',
-    price:    '$2,500',
     pitch:    'You are losing money on missed calls and low reviews. I will install the system that captures missed leads and automates your Google reviews — starting this week.',
     includes: [
       'Missed Call Text-Back System',
@@ -67,7 +65,6 @@ const PACKAGES = [
     for:      'Business owner who wants everything handled',
     name:     'Full Anti-Chaos Suite',
     phases:   'All 3 Phases',
-    price:    '$5,000 – $6,000',
     pitch:    'I will move you from scattered to systemised in 30 days. You focus on the work — the system handles everything else.',
     includes: [
       'Everything in Phase 1 (Strategy + Brand)',
@@ -266,7 +263,7 @@ const PackagesSection = () => {
                       </ul>
                     </div>
 
-                    {/* Right: price + CTA */}
+                    {/* Right: CTA */}
                     <div style={{
                       display:        'flex',
                       flexDirection:  'column',
@@ -279,14 +276,15 @@ const PackagesSection = () => {
                       border:         `1px solid ${pkg.accent}22`,
                     }}>
                       <p className="section-label" style={{ marginBottom: 'var(--space-4)' }}>
-                        TOTAL INVESTMENT
+                        READY WHEN YOU ARE
                       </p>
                       <p className="text-display" style={{
-                        fontSize:     'clamp(2.5rem, 5vw, 4rem)',
+                        fontSize:     'clamp(2rem, 4vw, 3rem)',
                         color:        pkg.accent,
-                        marginBottom: 'var(--space-8)',
+                        marginBottom: 'var(--space-6)',
+                        lineHeight:   1.1,
                       }}>
-                        {pkg.price}
+                        {pkg.name}
                       </p>
                       <p style={{
                         fontFamily: 'var(--font-body)',
@@ -295,7 +293,7 @@ const PackagesSection = () => {
                         marginBottom: 'var(--space-8)',
                         lineHeight: 1.6,
                       }}>
-                        One-time. No retainer. No surprise fees.
+                        Let&apos;s talk scope on a free call. No pitch. Just clarity.
                       </p>
                       <a
                         href="#cta"

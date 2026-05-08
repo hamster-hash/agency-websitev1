@@ -75,7 +75,7 @@ const PhilosophySection = () => {
   const allTicker = [...TICKER_ITEMS, ...TICKER_ITEMS]
 
   return (
-    <section style={{
+    <section id="philosophy" style={{
       background:     'var(--color-bg)',
       borderTop:      '1px solid var(--color-border)',
       paddingTop:     'var(--space-32)',
@@ -130,6 +130,53 @@ const PhilosophySection = () => {
             </div>
           ))}
         </blockquote>
+
+        {/* ── YouTube Plug ─────────────────────────────────────── */}
+        <div style={{
+          marginTop:    'var(--space-12)',
+          padding:      'var(--space-8)',
+          border:       '1px solid rgba(200,244,0,0.15)',
+          borderRadius: '4px',
+          background:   'rgba(200,244,0,0.03)',
+          maxWidth:     '700px',
+        }}>
+          <p className="text-mono" style={{
+            fontSize: 'var(--text-base)',
+            color:    'var(--color-text-secondary)',
+            lineHeight: 1.6,
+          }}>
+            I also make content on YouTube to teach you business in a fun way.
+            They call me <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>Sensei</span> over there.
+          </p>
+          <a
+            href="https://www.youtube.com/@sensei_raff"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display:       'inline-flex',
+              alignItems:    'center',
+              gap:           '10px',
+              marginTop:     'var(--space-4)',
+              padding:       '10px 20px',
+              background:    '#FF0000',
+              color:         '#fff',
+              borderRadius:  '4px',
+              fontFamily:    'var(--font-mono)',
+              fontSize:      'var(--text-sm)',
+              fontWeight:    600,
+              letterSpacing: '0.04em',
+              textDecoration: 'none',
+              transition:    'opacity 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            <svg width="20" height="14" viewBox="0 0 20 14" fill="currentColor">
+              <path d="M19.615 2.184A2.516 2.516 0 0017.847.418C16.28 0 10 0 10 0S3.72 0 2.153.418A2.516 2.516 0 00.385 2.184 26.386 26.386 0 000 7a26.386 26.386 0 00.385 4.816A2.516 2.516 0 002.153 13.582C3.72 14 10 14 10 14s6.28 0 7.847-.418a2.516 2.516 0 001.768-1.766A26.386 26.386 0 0020 7a26.386 26.386 0 00-.385-4.816zM8 10V4l5.196 3L8 10z"/>
+            </svg>
+            Watch on YouTube
+          </a>
+        </div>
 
         {/* ── Attribution ─────────────────────────────────────── */}
         <div style={{

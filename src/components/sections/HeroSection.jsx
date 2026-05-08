@@ -30,7 +30,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const HEADLINE_LINES = [
   ['Your', 'business'],
-  ["isn't", 'broken.'],
+  ["isn't", { word: 'broken.', highlight: true }],
   ["It's", 'just', 'missing'],
   ['a', 'system.'],
 ]
@@ -39,7 +39,7 @@ const SUBLINE  = `[ not an agency. an engineer who gives a damn. ]`
 const CTA_TEXT = `→ let's diagnose your business`
 
 // Cheeky label above the mascot
-const MASCOT_LABEL = `Surprised, why I'm here?`
+const MASCOT_LABEL = `Heyya fellas, I am Raff`
 
 // ─────────────────────────────────────────────────────────────
 
@@ -52,27 +52,31 @@ const HeroSection = () => {
   const mascotRef    = useRef(null)
   const wordRefs     = useRef([])
 
-  // ─── 1. Cursor Spotlight Effect ─────────────────────────────
+  // ─── 1. Cursor Spotlight Effect (rAF-throttled, no GSAP) ────
   useEffect(() => {
     const section   = sectionRef.current
     const spotlight = spotlightRef.current
     if (!section || !spotlight) return
 
-    const onMouseMove = (e) => {
-      const rect = section.getBoundingClientRect()
-      const x    = e.clientX - rect.left
-      const y    = e.clientY - rect.top
+    let x = 0, y = 0, ticking = false
 
-      gsap.to(spotlight, {
-        '--x': `${x}px`,
-        '--y': `${y}px`,
-        duration: 0.6,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      })
+    const update = () => {
+      spotlight.style.setProperty('--x', `${x}px`)
+      spotlight.style.setProperty('--y', `${y}px`)
+      ticking = false
     }
 
-    section.addEventListener('mousemove', onMouseMove)
+    const onMouseMove = (e) => {
+      const rect = section.getBoundingClientRect()
+      x = e.clientX - rect.left
+      y = e.clientY - rect.top
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
+
+    section.addEventListener('mousemove', onMouseMove, { passive: true })
     return () => section.removeEventListener('mousemove', onMouseMove)
   }, [])
 
@@ -117,47 +121,41 @@ const HeroSection = () => {
     if (!section || !headline || !mascot) return
 
     // Set mascot's starting state before scroll animation begins
-    // These values are the BEFORE state (at scroll position 0)
     gsap.set(mascot, {
-      scale:           0.65,          // ← starts at 65% size
-      x:               100,           // ← starts 100px to the right
+      scale:           0.65,
+      x:               100,
       transformOrigin: 'bottom center',
+      force3D:         true,
     })
+    gsap.set(headline, { force3D: true })
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start:   'top top',           // ← pin starts when hero hits top of viewport
-        end:     '+=700',             // ← scroll 700px before unpinning (increase to slow down)
+        start:   'top top',
+        end:     '+=700',
         pin:     true,
-        scrub:   1.5,                 // ← smoothness: 1 = snappy, 3 = very smooth
-        // markers: true,             // ← uncomment to see trigger lines for debugging
-      }
+        scrub:   0.8,                 // snappier + less janky than 1.5
+        anticipatePin: 1,
+        fastScrollEnd: true,
+        invalidateOnRefresh: true,
+      },
+      defaults: { ease: 'none', force3D: true },
     })
 
-    // ── Headline shrinks toward top-left ──────────────────────
     tl.to(headline, {
-      scale:           0.45,          // ← how small headline gets (0.5 = half size)
+      scale:           0.45,
       transformOrigin: 'top left',
-      opacity:         0.3,           // ← how faded it gets
-      ease:            'none',
+      opacity:         0.3,
     }, 0)
-
-    // Subline + CTA fade out at same time
-    .to([sublineRef.current, ctaRef.current], {
+    .to(sublineRef.current, {
       opacity: 0,
       y:       -30,
-      ease:    'none',
     }, 0)
-
-    // ── Mascot grows and slides left simultaneously ───────────
-    // from: scale 0.65, x: +100 (set via gsap.set above)
-    // to:   scale 1.9,  x: -30  (zoomed in, slightly left of center)
-    tl.to(mascot, {
-      scale:   1.9,     // ← final size (1.9 = 190% — big, commanding)
-      x:       -30,     // ← final x offset (negative = moved left)
-      ease:    'none',
-    }, 0)               // ← '0' = same position on timeline as headline
+    .to(mascot, {
+      scale: 1.9,
+      x:     -30,
+    }, 0)
 
     return () => ScrollTrigger.getAll().forEach(t => t.kill())
   }, [])
@@ -166,6 +164,7 @@ const HeroSection = () => {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       style={{
         position:       'relative',
@@ -223,12 +222,13 @@ const HeroSection = () => {
           ================================================================ */}
       <div
         ref={mascotRef}
+        className="hero-mascot"
         aria-hidden="true"
         style={{
           position:      'absolute',
-          bottom:        0,                          // ← anchored to bottom of section
-          right:         '5vw',                      // ← distance from right edge
-          width:         'clamp(200px, 26vw, 400px)',// ← responsive width
+          bottom:        0,
+          right:         '5vw',
+          width:         'clamp(200px, 26vw, 400px)',
           pointerEvents: 'none',
           userSelect:    'none',
           zIndex:        2,
@@ -271,7 +271,7 @@ const HeroSection = () => {
             mixBlendMode 'screen' = black bg disappears on dark surfaces
             This is the key trick — no need to manually remove background */}
         <Image
-          src="/smile.png" 
+          src="/smile.png"
           alt="mascot"
           width={400}
           height={580}
@@ -281,8 +281,7 @@ const HeroSection = () => {
             height:       'auto',
             objectFit:    'contain',
             display:      'block',
-            mixBlendMode: 'screen',      // ← black bg becomes invisible
-            filter:       'contrast(1.05) brightness(1.05)',
+            mixBlendMode: 'screen',
           }}
         />
       </div>
@@ -301,32 +300,41 @@ const HeroSection = () => {
         </p>
 
         {/* ── Headline ──────────────────────────────────────── */}
-        <div ref={headlineRef}>
+        <div ref={headlineRef} className="hero-headline">
           {HEADLINE_LINES.map((line, lineIdx) => (
             <div
               key={lineIdx}
               style={{
                 display:       'flex',
                 flexWrap:      'wrap',
-                gap:           '0.5em',   // ← word spacing between each word
+                gap:           '0.6em',
                 lineHeight:    1.05,
                 overflow:      'hidden',
                 paddingBottom: '0.05em',
               }}
             >
-              {line.map((word, wIdx) => {
+              {line.map((wordItem, wIdx) => {
                 const currentIdx = wordIndex++
+                const isObj = typeof wordItem === 'object'
+                const word = isObj ? wordItem.word : wordItem
+                const isHighlight = isObj && wordItem.highlight
+                const isLastWord = lineIdx === HEADLINE_LINES.length - 1 && wIdx === line.length - 1
                 return (
                   <span
                     key={wIdx}
                     ref={el => wordRefs.current[currentIdx] = el}
                     className="text-display"
                     style={{
-                      fontSize: 'clamp(3rem, 8vw, 7rem)',
-                      display:  'inline-block',
-                      color:    (lineIdx === HEADLINE_LINES.length - 1 && wIdx === line.length - 1)
+                      fontSize:      'clamp(3rem, 8vw, 7rem)',
+                      display:       'inline-block',
+                      letterSpacing: '0.02em',
+                      color:         isHighlight
                         ? 'var(--color-accent)'
-                        : 'var(--color-text-primary)',
+                        : isLastWord
+                          ? 'var(--color-accent)'
+                          : 'var(--color-text-primary)',
+                      textDecoration: isHighlight ? 'line-through' : 'none',
+                      textDecorationColor: isHighlight ? 'var(--color-accent)' : undefined,
                     }}
                   >
                     {word}
@@ -351,8 +359,14 @@ const HeroSection = () => {
           {SUBLINE}
         </p>
 
-        {/* ── CTA button ─────────────────────────────────────── */}
-        <div ref={ctaRef} style={{ marginTop: 'var(--space-12)', opacity: 0 }}>
+        {/* ── CTA button — in flow, below hero text ───────────── */}
+        <div
+          ref={ctaRef}
+          style={{
+            marginTop: 'var(--space-12)',
+            opacity:   0,
+          }}
+        >
           <a href="#packages" className="btn-primary">
             {CTA_TEXT}
           </a>

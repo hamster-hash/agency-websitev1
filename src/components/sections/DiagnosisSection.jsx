@@ -13,7 +13,7 @@
 //   - Closing line  → edit CLOSING_LINE constant
 // ============================================================
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -57,6 +57,7 @@ const DiagnosisSection = () => {
   const wrapperRef    = useRef(null)  // the pinned outer container
   const trackRef      = useRef(null)  // the horizontal moving track
   const closingRef    = useRef(null)
+  const [hoveredIdx, setHoveredIdx] = useState(null)
 
   useEffect(() => {
     const wrapper = wrapperRef.current
@@ -103,6 +104,7 @@ const DiagnosisSection = () => {
   return (
     /* ── Outer wrapper — this gets PINNED by ScrollTrigger ───── */
     <section
+      id="diagnosis"
       ref={wrapperRef}
       style={{
         overflow: 'hidden',
@@ -158,7 +160,9 @@ const DiagnosisSection = () => {
         {DIAGNOSIS_CARDS.map((card, idx) => (
           <div
             key={idx}
-            className="diagnosis-card"
+            className={`diagnosis-card diagnosis-card-${idx}${hoveredIdx === idx ? ' is-hovered' : ''}`}
+            onMouseEnter={() => setHoveredIdx(idx)}
+            onMouseLeave={() => setHoveredIdx(null)}
             style={{
               width:      'clamp(280px, 28vw, 380px)',
               flexShrink: 0,
@@ -168,7 +172,6 @@ const DiagnosisSection = () => {
               padding:    'var(--space-8)',
               position:   'relative',
               overflow:   'hidden',
-              // Subtle hover: handled via CSS class
             }}
           >
             {/* Ghost number watermark */}
@@ -187,19 +190,25 @@ const DiagnosisSection = () => {
             </span>
 
             {/* Icon */}
-            <div style={{ fontSize: '2rem', marginBottom: 'var(--space-6)' }}>
+            <div
+              className="diagnosis-icon"
+              style={{ fontSize: '2rem', marginBottom: 'var(--space-6)', position: 'relative', zIndex: 2 }}
+            >
               {card.icon}
             </div>
 
             {/* Red status dot */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}>
-              <div style={{
-                width:  8,
-                height: 8,
-                borderRadius: '50%',
-                background: '#FF4040',
-                boxShadow: '0 0 8px #FF4040',
-              }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', position: 'relative', zIndex: 2 }}>
+              <div
+                className="diagnosis-dot"
+                style={{
+                  width:  8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: '#FF4040',
+                  boxShadow: '0 0 8px #FF4040',
+                }}
+              />
               <span className="text-mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-dim)' }}>
                 SYMPTOM DETECTED
               </span>
@@ -212,7 +221,8 @@ const DiagnosisSection = () => {
               fontWeight: 700,
               lineHeight: 1.2,
               marginBottom: 'var(--space-4)',
-              position:   'relative', // above ghost number
+              position:   'relative',
+              zIndex:     2,
             }}>
               {card.symptom}
             </h3>
@@ -224,19 +234,24 @@ const DiagnosisSection = () => {
               color:      'var(--color-text-dim)',
               lineHeight: 1.6,
               position:   'relative',
+              zIndex:     2,
             }}>
               {card.detail}
             </p>
 
             {/* Bottom accent line */}
-            <div style={{
-              position:   'absolute',
-              bottom:     0,
-              left:       0,
-              height:     '2px',
-              width:      `${(idx + 1) * 25}%`,
-              background: 'var(--color-accent)',
-            }} />
+            <div
+              className="diagnosis-accent-line"
+              style={{
+                position:   'absolute',
+                bottom:     0,
+                left:       0,
+                height:     '2px',
+                width:      `${(idx + 1) * 25}%`,
+                background: 'var(--color-accent)',
+                zIndex:     2,
+              }}
+            />
           </div>
         ))}
 

@@ -14,6 +14,7 @@
 import '@/app/globals.css'
 import GrainOverlay from '@/components/ui/GrainOverlay'
 import CustomCursor from '@/components/ui/CustomCursor'
+import Navbar       from '@/components/ui/Navbar'
 
 export const metadata = {
   title: 'Anti-Chaos | Business Engineer',  // ← change your agency name here
@@ -30,8 +31,17 @@ const RootLayout = ({ children }) => {
         {/* Custom cursor — hidden on mobile automatically via CSS */}
         <CustomCursor />
 
+        {/* Fixed top navigation */}
+        <Navbar />
+
         {/* Page content */}
         <main>{children}</main>
+
+        {/* Footer */}
+        <footer className="site-footer">
+          <span className="site-footer-brand">Re<span>:</span>ACH</span>
+          <span className="site-footer-by">by<span>raff</span></span>
+        </footer>
       </body>
     </html>
   )

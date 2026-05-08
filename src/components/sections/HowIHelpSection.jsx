@@ -31,7 +31,6 @@ const PHASES = [
     subtitle: 'Build trust before they even talk to you.',
     tag:     'The Brain',
     duration: '10 days',
-    price:   '$1,500 – $2,500',
     deliverables: [
       { name: 'ICP Workshop',         desc: '1-hour deep session to define exactly who your customer is.' },
       { name: 'Core Message Guide',   desc: 'Your tagline, elevator pitch, and Unique Value Proposition.' },
@@ -47,7 +46,6 @@ const PHASES = [
     subtitle: 'Automate the work so the business runs without you.',
     tag:     'The Body',
     duration: '5 days',
-    price:   '$2,000 – $3,500',
     deliverables: [
       { name: 'Missed Call Text-Back', desc: 'Auto-SMS fires within seconds of a missed call. No lead left behind.' },
       { name: '24/7 Automated Booking', desc: 'Calendar integration with payments, time zones, and reminders.' },
@@ -64,7 +62,6 @@ const PHASES = [
     subtitle: 'Bring real people into the system you just built.',
     tag:     'The Fuel',
     duration: '7 days',
-    price:   '$1,000 – $1,500',
     deliverables: [
       { name: 'Content Pillar Blueprint', desc: '3–5 core topics that position you as the obvious expert.' },
       { name: '30-Day Authority Calendar', desc: 'A logic map of what to post — not fluff, just what works.' },
@@ -109,7 +106,7 @@ const HowIHelpSection = () => {
   }, [])
 
   return (
-    <section style={{
+    <section id="how" style={{
       background:  'var(--color-bg)',
       borderTop:   '1px solid var(--color-border)',
       paddingTop:  'var(--space-24)',
@@ -219,7 +216,7 @@ const HowIHelpSection = () => {
                   {phase.subtitle}
                 </p>
 
-                {/* Meta: duration + price */}
+                {/* Meta: duration */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                   <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'baseline' }}>
                     <span className="text-mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-dim)' }}>
@@ -227,14 +224,6 @@ const HowIHelpSection = () => {
                     </span>
                     <span className="text-mono" style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-primary)' }}>
                       {phase.duration}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'baseline' }}>
-                    <span className="text-mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-dim)' }}>
-                      INVESTMENT
-                    </span>
-                    <span className="text-mono" style={{ fontSize: 'var(--text-sm)', color: 'var(--color-accent)' }}>
-                      {phase.price}
                     </span>
                   </div>
                 </div>

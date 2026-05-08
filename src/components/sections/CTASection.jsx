@@ -27,12 +27,10 @@ const SUBTEXT         = 'Free 30-minute diagnostic call. No pitch. Just clarity.
 const CTA_TEXT        = '→ Book your free call'
 const CTA_HREF        = 'https://calendly.com/your-link' // ← replace with your Calendly link
 
-const CONTACT_EMAIL   = 'hello@youragency.com'           // ← your email
+const CONTACT_EMAIL   = 'raffsenseireach@gmail.com'
 
 const SOCIALS = [
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourprofile' },
-  // { label: 'Twitter',  href: 'https://twitter.com/yourhandle' },
-  // Add more as needed
+  { label: 'Instagram', href: 'https://www.instagram.com/raff_senseii/' },
 ]
 
 // Footer note
@@ -115,6 +113,19 @@ const CTASection = () => {
               {HEADLINE_ACCENT}
             </em>
           </h2>
+
+          {/* ── Punchline ─────────────────────────────────────────── */}
+          <p className="text-mono" style={{
+            fontSize:     'var(--text-lg)',
+            color:        'var(--color-accent)',
+            fontStyle:    'italic',
+            marginBottom: 'var(--space-6)',
+          }}>
+            &ldquo;Business is fun if you do it right.&rdquo;
+            <span style={{ color: 'var(--color-text-dim)', fontStyle: 'normal', marginLeft: '8px' }}>
+              — Raff
+            </span>
+          </p>
 
           {/* ── Subtext ─────────────────────────────────────────── */}
           <p style={{
