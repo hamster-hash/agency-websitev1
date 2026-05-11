@@ -76,7 +76,7 @@ const PhilosophySection = () => {
 
   return (
     <section id="philosophy" style={{
-      background:     'var(--color-bg)',
+      background:     'linear-gradient(175deg, #12100E 0%, #141210 40%, #100E12 100%)',
       borderTop:      '1px solid var(--color-border)',
       paddingTop:     'var(--space-32)',
       paddingBottom:  0,

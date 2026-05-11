@@ -113,7 +113,7 @@ const PackagesSection = () => {
       id="packages"
       ref={sectionRef}
       style={{
-        background:    'var(--color-bg-2)',
+        background:    'linear-gradient(180deg, #111114 0%, #151518 50%, #111116 100%)',
         borderTop:     '1px solid var(--color-border)',
         paddingTop:    'var(--space-32)',
         paddingBottom: 'var(--space-32)',

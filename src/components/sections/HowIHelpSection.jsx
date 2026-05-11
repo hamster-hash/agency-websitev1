@@ -107,7 +107,7 @@ const HowIHelpSection = () => {
 
   return (
     <section id="how" style={{
-      background:  'var(--color-bg)',
+      background:  'linear-gradient(170deg, #101214 0%, #0E1110 40%, #121416 100%)',
       borderTop:   '1px solid var(--color-border)',
       paddingTop:  'var(--space-24)',
       paddingBottom: 'var(--space-32)',

@@ -30,9 +30,9 @@ gsap.registerPlugin(ScrollTrigger)
 
 const HEADLINE_LINES = [
   ['Your', 'business'],
-  ["isn't", { word: 'broken.', highlight: true }],
+  ["isn't", { word: 'broken.', highlight: true, altFont: true }],
   ["It's", 'just', 'missing'],
-  ['a', 'system.'],
+  ['a', { word: 'system.', altFont: true }],
 ]
 
 const SUBLINE  = `[ not an agency. an engineer who gives a damn. ]`
@@ -174,7 +174,7 @@ const HeroSection = () => {
         justifyContent: 'center',
         padding:        'var(--space-32) var(--space-8)',
         overflow:       'hidden',
-        background:     'var(--color-bg)',
+        background:     'linear-gradient(165deg, #0D1117 0%, #0A0A0A 40%, #111118 100%)',
       }}
     >
       {/* ── Spotlight glow follows cursor ────────────────────── */}
@@ -318,6 +318,7 @@ const HeroSection = () => {
                 const isObj = typeof wordItem === 'object'
                 const word = isObj ? wordItem.word : wordItem
                 const isHighlight = isObj && wordItem.highlight
+                const isAltFont = isObj && wordItem.altFont
                 const isLastWord = lineIdx === HEADLINE_LINES.length - 1 && wIdx === line.length - 1
                 return (
                   <span
@@ -325,9 +326,11 @@ const HeroSection = () => {
                     ref={el => wordRefs.current[currentIdx] = el}
                     className="text-display"
                     style={{
-                      fontSize:      'clamp(3rem, 8vw, 7rem)',
+                      fontSize:      'clamp(2.4rem, 6.5vw, 5.5rem)',
                       display:       'inline-block',
-                      letterSpacing: '0.02em',
+                      letterSpacing: '-0.02em',
+                      fontFamily:    isAltFont ? 'var(--font-mono)' : undefined,
+                      fontStyle:     isAltFont ? 'italic' : undefined,
                       color:         isHighlight
                         ? 'var(--color-accent)'
                         : isLastWord

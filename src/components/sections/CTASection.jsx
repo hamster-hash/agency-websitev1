@@ -72,7 +72,7 @@ const CTASection = () => {
       id="cta"
       ref={sectionRef}
       style={{
-        background:     'var(--color-bg)',
+        background:     'linear-gradient(180deg, #0E1010 0%, #121014 50%, #0A0C10 100%)',
         borderTop:      '1px solid var(--color-border)',
         paddingTop:     'var(--space-32)',
         paddingBottom:  'var(--space-24)',

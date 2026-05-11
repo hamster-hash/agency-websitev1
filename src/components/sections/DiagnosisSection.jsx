@@ -108,7 +108,7 @@ const DiagnosisSection = () => {
       ref={wrapperRef}
       style={{
         overflow: 'hidden',
-        background: 'var(--color-bg)',
+        background: 'linear-gradient(180deg, #0F0F12 0%, #141418 50%, #0F1014 100%)',
       }}
     >
       {/* ── Section label ─────────────────────────────────────── */}
