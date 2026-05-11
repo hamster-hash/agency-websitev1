@@ -50,28 +50,28 @@ const PhilosophySection = () => {
 
   // ─── Staggered line reveal on scroll ────────────────────────
   useEffect(() => {
-    const lines = lineRefs.current.filter(Boolean)
+    const ctx = gsap.context(() => {
+      const lines = lineRefs.current.filter(Boolean)
 
-    gsap.fromTo(lines,
-      { opacity: 0, y: 50 },
-      {
-        opacity:  1,
-        y:        0,
-        duration: 0.8,
-        ease:     'power3.out',
-        stagger:  0.15,       // ← delay between each line
-        scrollTrigger: {
-          trigger: quoteRef.current,
-          start:   'top 70%', // ← when to trigger
-          // markers: true,
+      gsap.fromTo(lines,
+        { opacity: 0, y: 50 },
+        {
+          opacity:  1,
+          y:        0,
+          duration: 0.8,
+          ease:     'power3.out',
+          stagger:  0.15,
+          scrollTrigger: {
+            trigger: quoteRef.current,
+            start:   'top 70%',
+          }
         }
-      }
-    )
+      )
+    }, quoteRef)
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => ctx.revert()
   }, [])
 
-  // Build doubled ticker array (duplicate for seamless loop)
   const allTicker = [...TICKER_ITEMS, ...TICKER_ITEMS]
 
   return (
@@ -188,7 +188,7 @@ const PhilosophySection = () => {
         }}>
           <div style={{ width: 40, height: 1, background: 'var(--color-border)' }} />
           <p className="text-mono" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-dim)' }}>
-            — the engineer behind your growth
+            the engineer behind your growth
           </p>
         </div>
       </div>
@@ -211,8 +211,7 @@ const PhilosophySection = () => {
           whiteSpace: 'nowrap',
           animation: 'marquee 25s linear infinite', // ← change 25s for speed
         }}>
-          {/* Duplicate twice for seamless loop */}
-          {[...allTicker, ...allTicker].map((item, idx) => (
+          {allTicker.map((item, idx) => (
             <span
               key={idx}
               className="text-mono"

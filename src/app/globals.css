@@ -344,43 +344,6 @@ button {
   transform: translateY(-1px);
 }
 
-/* Ghost button */
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  letter-spacing: 0.05em;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  padding: var(--space-4) var(--space-8);
-  border-radius: var(--border-radius);
-  transition: border-color var(--duration-fast), color var(--duration-fast);
-}
-
-.btn-ghost:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-
-/* ============================================================
-   SCROLL-TRIGGERED ANIMATION CLASSES
-   GSAP will add/remove these — base state is "hidden"
-   ============================================================ */
-
-/* Elements start invisible, GSAP fades them in */
-.gsap-fade-up {
-  opacity: 0;
-  transform: translateY(40px);
-}
-
-/* For staggered children — apply to parent, GSAP staggers children */
-.gsap-stagger-children > * {
-  opacity: 0;
-  transform: translateY(30px);
-}
 
 /* Horizontal scroll wrapper */
 .gsap-horizontal-wrapper {
@@ -719,4 +682,96 @@ button {
 ::selection {
   background: var(--color-accent);
   color: var(--color-bg);
+}
+
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+@keyframes scrollLine {
+  0%, 100% { transform: scaleY(0); transform-origin: top; }
+  50%      { transform: scaleY(1); transform-origin: top; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   ============================================================ */
+@media (max-width: 768px) {
+  .phase-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .package-expanded {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ============================================================
+   MOBILE NAVIGATION
+   ============================================================ */
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+  margin-left: auto;
+}
+
+.navbar-mobile-menu {
+  display: none;
+  position: fixed;
+  top: var(--nav-height, 60px);
+  left: 0;
+  right: 0;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-6) var(--space-8);
+  flex-direction: column;
+  gap: var(--space-4);
+  z-index: 999;
+}
+
+.navbar-mobile-menu.is-open {
+  display: flex;
+}
+
+.navbar-mobile-menu a {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  padding: var(--space-3) 0;
+  transition: color var(--duration-fast);
+}
+
+.navbar-mobile-menu a:hover {
+  color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-cta {
+    display: none !important;
+  }
 }

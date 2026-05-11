@@ -36,7 +36,7 @@ const PHASES = [
       { name: 'Core Message Guide',   desc: 'Your tagline, elevator pitch, and Unique Value Proposition.' },
       { name: 'Competitor Gap Report', desc: '3–5 competitors analysed. Where you can win, clearly mapped.' },
       { name: 'Landing Page',         desc: 'High-speed, conversion-optimised 1-page site (Framer/Webflow).' },
-      { name: 'Branding Kit',         desc: 'Logo, color palette, typography — US-standard professional look.' },
+      { name: 'Branding Kit',         desc: 'Logo, color palette, typography. US-standard professional look.' },
     ],
   },
   {
@@ -50,7 +50,7 @@ const PHASES = [
       { name: 'Missed Call Text-Back', desc: 'Auto-SMS fires within seconds of a missed call. No lead left behind.' },
       { name: '24/7 Automated Booking', desc: 'Calendar integration with payments, time zones, and reminders.' },
       { name: 'Speed-to-Lead Responder', desc: 'Auto email/SMS within 2 minutes of any form submission.' },
-      { name: 'CRM Dashboard',          desc: '"Command center" — all leads visible in one pipeline.' },
+      { name: 'CRM Dashboard',          desc: '"Command center". All leads visible in one pipeline.' },
       { name: 'Review Extraction System', desc: 'Auto thank-you message that asks for Google/Yelp review.' },
       { name: 'Payment & Invoicing',    desc: 'Stripe/PayPal connected. Accept deposits instantly.' },
     ],
@@ -64,7 +64,7 @@ const PHASES = [
     duration: '7 days',
     deliverables: [
       { name: 'Content Pillar Blueprint', desc: '3–5 core topics that position you as the obvious expert.' },
-      { name: '30-Day Authority Calendar', desc: 'A logic map of what to post — not fluff, just what works.' },
+      { name: '30-Day Authority Calendar', desc: 'A logic map of what to post. Not fluff, just what works.' },
       { name: 'Platform Playbook',         desc: 'LinkedIn / Instagram profile optimised for credibility.' },
       { name: 'Repurposing Workflow',      desc: '1 long video → 5 Reels → 10 Tweets. Automated process.' },
       { name: 'Lead Magnet',               desc: 'A free guide or calculator that captures emails for you.' },
@@ -79,30 +79,30 @@ const HowIHelpSection = () => {
 
   // ─── Staggered reveal for each phase block ──────────────────
   useEffect(() => {
-    phaseRefs.current.forEach((phaseEl) => {
-      if (!phaseEl) return
+    const ctx = gsap.context(() => {
+      phaseRefs.current.forEach((phaseEl) => {
+        if (!phaseEl) return
 
-      // Each child element animates in sequentially
-      const children = phaseEl.querySelectorAll('.deliverable-row, .phase-header')
+        const children = phaseEl.querySelectorAll('.deliverable-row, .phase-header')
 
-      gsap.fromTo(children,
-        { opacity: 0, y: 35 },
-        {
-          opacity:  1,
-          y:        0,
-          duration: 0.6,
-          ease:     'power3.out',
-          stagger:  0.1,          // ← seconds between each item (0.05 = fast, 0.2 = slow)
-          scrollTrigger: {
-            trigger: phaseEl,
-            start:   'top 75%',   // ← triggers when top of block is 75% down viewport
-            // markers: true,
+        gsap.fromTo(children,
+          { opacity: 0, y: 35 },
+          {
+            opacity:  1,
+            y:        0,
+            duration: 0.6,
+            ease:     'power3.out',
+            stagger:  0.1,
+            scrollTrigger: {
+              trigger: phaseEl,
+              start:   'top 75%',
+            }
           }
-        }
-      )
+        )
+      })
     })
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => ctx.revert()
   }, [])
 
   return (
@@ -136,8 +136,8 @@ const HowIHelpSection = () => {
             fontSize:   'var(--text-lg)',
             lineHeight: 1.7,
           }}>
-            Tech is only 40% of it. The rest is strategy, marketing, and market research —
-            the part nobody else does with you.
+            Tech is only 40% of it. The rest is strategy, marketing, and market research.
+            The part nobody else does with you.
           </p>
         </div>
 
@@ -148,9 +148,10 @@ const HowIHelpSection = () => {
             <div
               key={idx}
               ref={el => phaseRefs.current[idx] = el}
+              className="phase-grid"
               style={{
                 display:    'grid',
-                gridTemplateColumns: '1fr 2fr', // ← left: label, right: content
+                gridTemplateColumns: '1fr 2fr',
                 gap:        'var(--space-12)',
                 paddingTop: 'var(--space-12)',
                 borderTop:  '1px solid var(--color-border)',
@@ -287,14 +288,6 @@ const HowIHelpSection = () => {
                 ))}
               </div>
 
-              {/* Phase responsive layout override */}
-              <style>{`
-                @media (max-width: 768px) {
-                  div[style*="grid-template-columns"] {
-                    grid-template-columns: 1fr !important;
-                  }
-                }
-              `}</style>
             </div>
           ))}
         </div>

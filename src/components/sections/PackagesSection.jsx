@@ -29,7 +29,7 @@ const PACKAGES = [
     for:      'New consultant or service provider',
     name:     'The Startup Special',
     phases:   'Phase 1 + Phase 2',
-    pitch:    'I will build your brand identity AND the automated system to handle your first 50 clients — so you never worry about the tech.',
+    pitch:    'I will build your brand identity AND the automated system to handle your first 50 clients so you never worry about the tech.',
     includes: [
       'ICP Workshop + Core Message Guide',
       'Competitor Gap Analysis',
@@ -48,7 +48,7 @@ const PACKAGES = [
     for:      'Existing local business (dentist, café, gym)',
     name:     'Revenue Recovery',
     phases:   'Phase 2 + Review System',
-    pitch:    'You are losing money on missed calls and low reviews. I will install the system that captures missed leads and automates your Google reviews — starting this week.',
+    pitch:    'You are losing money on missed calls and low reviews. I will install the system that captures missed leads and automates your Google reviews. Starting this week.',
     includes: [
       'Missed Call Text-Back System',
       '24/7 Automated Booking',
@@ -65,7 +65,7 @@ const PACKAGES = [
     for:      'Business owner who wants everything handled',
     name:     'Full Anti-Chaos Suite',
     phases:   'All 3 Phases',
-    pitch:    'I will move you from scattered to systemised in 30 days. You focus on the work — the system handles everything else.',
+    pitch:    'I will move you from scattered to systemised in 30 days. You focus on the work. The system handles everything else.',
     includes: [
       'Everything in Phase 1 (Strategy + Brand)',
       'Everything in Phase 2 (Automation + CRM)',
@@ -87,23 +87,24 @@ const PackagesSection = () => {
 
   // ─── Entrance animation ─────────────────────────────────────
   useEffect(() => {
-    gsap.fromTo(cardRefs.current.filter(Boolean),
-      { opacity: 0, y: 60 },
-      {
-        opacity:  1,
-        y:        0,
-        duration: 0.7,
-        ease:     'power3.out',
-        stagger:  0.15,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top 70%',
-          // markers: true,
+    const ctx = gsap.context(() => {
+      gsap.fromTo(cardRefs.current.filter(Boolean),
+        { opacity: 0, y: 60 },
+        {
+          opacity:  1,
+          y:        0,
+          duration: 0.7,
+          ease:     'power3.out',
+          stagger:  0.15,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start:   'top 70%',
+          }
         }
-      }
-    )
+      )
+    }, sectionRef)
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => ctx.revert()
   }, [])
 
   const toggle = (idx) => setOpenIdx(openIdx === idx ? null : idx)
@@ -218,7 +219,7 @@ const PackagesSection = () => {
 
                 {/* ── Expanded Content ─────────────────────────── */}
                 {isOpen && (
-                  <div style={{
+                  <div className="package-expanded" style={{
                     padding:    'var(--space-8)',
                     display:    'grid',
                     gridTemplateColumns: '1fr 1fr',
@@ -296,7 +297,9 @@ const PackagesSection = () => {
                         Let&apos;s talk scope on a free call. No pitch. Just clarity.
                       </p>
                       <a
-                        href="#cta"
+                        href="https://calendly.com/reachbyraff"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="btn-primary"
                         style={{ background: pkg.accent, width: '100%', justifyContent: 'center' }}
                       >
@@ -304,18 +307,6 @@ const PackagesSection = () => {
                       </a>
                     </div>
 
-                    {/* Responsive: stack on mobile */}
-                    <style>{`
-                      @media (max-width: 768px) {
-                        div[style*="grid-template-columns: 1fr 1fr"] {
-                          grid-template-columns: 1fr !important;
-                        }
-                      }
-                      @keyframes fadeInUp {
-                        from { opacity: 0; transform: translateY(20px); }
-                        to   { opacity: 1; transform: translateY(0); }
-                      }
-                    `}</style>
                   </div>
                 )}
               </div>

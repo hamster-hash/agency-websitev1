@@ -25,7 +25,7 @@ const HEADLINE        = 'Ready to stop'
 const HEADLINE_ACCENT = 'the chaos?'
 const SUBTEXT         = 'Free 30-minute diagnostic call. No pitch. Just clarity.'
 const CTA_TEXT        = '→ Book your free call'
-const CTA_HREF        = 'https://calendly.com/your-link' // ← replace with your Calendly link
+const CTA_HREF        = 'https://calendly.com/reachbyraff'
 
 const CONTACT_EMAIL   = 'raffsenseireach@gmail.com'
 
@@ -46,25 +46,26 @@ const CTASection = () => {
   useEffect(() => {
     if (!contentRef.current) return
 
-    const children = contentRef.current.children
+    const ctx = gsap.context(() => {
+      const children = contentRef.current.children
 
-    gsap.fromTo(children,
-      { opacity: 0, y: 50 },
-      {
-        opacity:  1,
-        y:        0,
-        duration: 0.8,
-        ease:     'power3.out',
-        stagger:  0.12,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start:   'top 75%',
-          // markers: true,
+      gsap.fromTo(children,
+        { opacity: 0, y: 50 },
+        {
+          opacity:  1,
+          y:        0,
+          duration: 0.8,
+          ease:     'power3.out',
+          stagger:  0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start:   'top 75%',
+          }
         }
-      }
-    )
+      )
+    }, sectionRef)
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => ctx.revert()
   }, [])
 
   return (
@@ -123,7 +124,7 @@ const CTASection = () => {
           }}>
             &ldquo;Business is fun if you do it right.&rdquo;
             <span style={{ color: 'var(--color-text-dim)', fontStyle: 'normal', marginLeft: '8px' }}>
-              — Raff
+              Raff
             </span>
           </p>
 

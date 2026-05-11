@@ -112,52 +112,51 @@ const HeroSection = () => {
   }, [])
 
   // ─── 3. Scroll: Headline DOWN ←→ Mascot UP (synced scrub) ───
-  // Single ScrollTrigger timeline controls both simultaneously.
-  // As user scrolls: headline shrinks to corner, mascot zooms in.
   useEffect(() => {
     const section  = sectionRef.current
     const headline = headlineRef.current
     const mascot   = mascotRef.current
     if (!section || !headline || !mascot) return
 
-    // Set mascot's starting state before scroll animation begins
-    gsap.set(mascot, {
-      scale:           0.65,
-      x:               100,
-      transformOrigin: 'bottom center',
-      force3D:         true,
-    })
-    gsap.set(headline, { force3D: true })
+    const ctx = gsap.context(() => {
+      gsap.set(mascot, {
+        scale:           0.65,
+        x:               100,
+        transformOrigin: 'bottom center',
+        force3D:         true,
+      })
+      gsap.set(headline, { force3D: true })
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start:   'top top',
-        end:     '+=700',
-        pin:     true,
-        scrub:   0.8,                 // snappier + less janky than 1.5
-        anticipatePin: 1,
-        fastScrollEnd: true,
-        invalidateOnRefresh: true,
-      },
-      defaults: { ease: 'none', force3D: true },
-    })
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start:   'top top',
+          end:     '+=700',
+          pin:     true,
+          scrub:   0.8,
+          anticipatePin: 1,
+          fastScrollEnd: true,
+          invalidateOnRefresh: true,
+        },
+        defaults: { ease: 'none', force3D: true },
+      })
 
-    tl.to(headline, {
-      scale:           0.45,
-      transformOrigin: 'top left',
-      opacity:         0.3,
-    }, 0)
-    .to(sublineRef.current, {
-      opacity: 0,
-      y:       -30,
-    }, 0)
-    .to(mascot, {
-      scale: 1.9,
-      x:     -30,
-    }, 0)
+      tl.to(headline, {
+        scale:           0.45,
+        transformOrigin: 'top left',
+        opacity:         0.3,
+      }, 0)
+      .to(sublineRef.current, {
+        opacity: 0,
+        y:       -30,
+      }, 0)
+      .to(mascot, {
+        scale: 1.9,
+        x:     -30,
+      }, 0)
+    }, sectionRef)
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill())
+    return () => ctx.revert()
   }, [])
 
   let wordIndex = 0
@@ -271,7 +270,7 @@ const HeroSection = () => {
             mixBlendMode 'screen' = black bg disappears on dark surfaces
             This is the key trick — no need to manually remove background */}
         <Image
-          src="/smile.png"
+          src="/smile.webp"
           alt="mascot"
           width={400}
           height={580}
@@ -394,12 +393,6 @@ const HeroSection = () => {
             background: 'linear-gradient(to bottom, var(--color-accent), transparent)',
             animation:  'scrollLine 1.5s ease-in-out infinite',
           }} />
-          <style>{`
-            @keyframes scrollLine {
-              0%, 100% { transform: scaleY(0); transform-origin: top; }
-              50%       { transform: scaleY(1); transform-origin: top; }
-            }
-          `}</style>
         </div>
       </div>
     </section>

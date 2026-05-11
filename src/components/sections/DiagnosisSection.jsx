@@ -31,7 +31,7 @@ const DIAGNOSIS_CARDS = [
   {
     number:    '02',
     symptom:   'You run the business. The business doesn\'t run itself.',
-    detail:    'No systems, no automation. Everything depends on you being online, available, and sharp — 24/7.',
+    detail:    'No systems, no automation. Everything depends on you being online, available, and sharp. 24/7.',
     icon:      '🔥',
   },
   {
@@ -64,41 +64,38 @@ const DiagnosisSection = () => {
     const track   = trackRef.current
     if (!wrapper || !track) return
 
-    // Calculate how far to scroll horizontally
-    // = total width of track minus viewport width
-    const getScrollDistance = () => track.scrollWidth - window.innerWidth
+    const ctx = gsap.context(() => {
+      const getScrollDistance = () => track.scrollWidth - window.innerWidth
 
-    const st = ScrollTrigger.create({
-      trigger:  wrapper,
-      start:    'top top',
-      end:      () => `+=${getScrollDistance() + 200}`, // ← +200 is extra breathing room
-      pin:      true,
-      scrub:    1,              // ← smoothness: 0 = instant, 2 = very smooth
-      // markers: true,         // ← uncomment to debug
-      animation: gsap.to(track, {
-        x:       () => -getScrollDistance(),
-        ease:    'none',
-      }),
-      invalidateOnRefresh: true, // recalculates on window resize
-    })
+      ScrollTrigger.create({
+        trigger:  wrapper,
+        start:    'top top',
+        end:      () => `+=${getScrollDistance() + 200}`,
+        pin:      true,
+        scrub:    1,
+        animation: gsap.to(track, {
+          x:       () => -getScrollDistance(),
+          ease:    'none',
+        }),
+        invalidateOnRefresh: true,
+      })
 
-    // Fade in closing line after cards pass
-    gsap.fromTo(closingRef.current,
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1,
-        y:       0,
-        scrollTrigger: {
-          trigger: wrapper,
-          start:   'top top',
-          end:     '+=200',
-          scrub:   true,
-          // markers: true,
+      gsap.fromTo(closingRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y:       0,
+          scrollTrigger: {
+            trigger: wrapper,
+            start:   'top top',
+            end:     '+=200',
+            scrub:   true,
+          }
         }
-      }
-    )
+      )
+    }, wrapperRef)
 
-    return () => st.kill()
+    return () => ctx.revert()
   }, [])
 
   return (
