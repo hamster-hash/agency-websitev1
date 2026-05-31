@@ -1,29 +1,50 @@
 'use client'
+// components/sections/TestimonialSection.jsx
+// ============================================================
+// TESTIMONIALS — Bold solid-color cards arranged in a grid.
+// Each card auto-flips on its own loop with a randomised
+// stagger so the page is always alive but never synced.
+// Rows drift at slightly different rates while you scroll
+// (subtle parallax — the "mould" effect).
+//
+// KEY TWEAKS:
+//   - Card content   → edit TESTIMONIALS
+//   - Card palette   → edit each entry's `color` / `text` / `accent`
+//   - Flip cadence   → edit FLIP_HOLD / FLIP_DURATION
+//   - Parallax range → edit yPercent values in useEffect
+// ============================================================
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+// ─── Content ────────────────────────────────────────────────
 const TESTIMONIALS = [
   {
     name: 'Danny Sanchez',
-    company: 'Sanchez & Sons Plumbing',
+    company: 'Sanchez & Sons',
     role: 'Owner',
     location: 'Austin, TX',
-    industry: 'Home Services',
-    quote: "We kept missing calls and losing jobs. Raff built us a clean website and a system that books estimates for us, even at night. Felt like hiring two extra people.",
+    industry: 'Plumbing',
     metric: '+40% revenue',
+    quote: "We kept missing calls and losing jobs. Raff built us a clean website and a system that books estimates for us, even at night. Felt like hiring two extra people.",
+    color:  '#0E3B2A',  // deep forest
+    text:   '#F0B5C4',  // soft pink
+    accent: '#F2C811',
   },
   {
     name: 'Maria Delgado',
-    company: 'Evergreen Landscaping Co.',
-    role: 'Operations Manager',
+    company: 'Evergreen Co.',
+    role: 'Operations',
     location: 'Phoenix, AZ',
-    industry: 'Home Services',
+    industry: 'Landscaping',
+    metric: '2× close rate',
     quote: "Our quotes used to take three days. Raff built us a system that sends them in three minutes. Clients are stunned, and we close twice as many jobs.",
-    metric: '2x close rate',
+    color:  '#F2C811',  // bright yellow
+    text:   '#3D2E00',  // olive
+    accent: '#0E3B2A',
   },
   {
     name: 'Yuki Tanaka',
@@ -31,385 +52,330 @@ const TESTIMONIALS = [
     role: 'Owner',
     location: 'Portland, OR',
     industry: 'Cafe',
+    metric: '+55% covers',
     quote: "We were struggling with operations. Raff built us a beautiful website and a QR-based booking and menu system. The cafe runs itself on slow mornings now.",
-    metric: '+55% weekday covers',
+    color:  '#4A1D7A',  // royal purple
+    text:   '#7CFFB2',  // mint
+    accent: '#F2C811',
   },
   {
     name: 'Priya Achar',
-    company: 'Flour & Fern Bakery',
+    company: 'Flour & Fern',
     role: 'Co-founder',
     location: 'Asheville, NC',
-    industry: 'Cafe',
+    industry: 'Bakery',
+    metric: '3× online orders',
     quote: "Pre-orders used to be a mess of DMs and sticky notes. Raff built us a simple ordering page and mornings are calm now. Loaves sell out before we open.",
-    metric: '3x online orders',
+    color:  '#DC5828',  // burnt orange
+    text:   '#FCD34D',  // sunflower
+    accent: '#0E3B2A',
   },
   {
     name: 'Aanya Verma',
-    company: 'Still Water Yoga',
+    company: 'Still Water',
     role: 'Studio Owner',
     location: 'Brooklyn, NY',
-    industry: 'Wellness Studio',
-    quote: "I was spending nights chasing class signups and reminders. Raff built me a system that does it quietly in the background. I just teach now.",
+    industry: 'Yoga',
     metric: '+70% retention',
+    quote: "I was spending nights chasing class signups and reminders. Raff built me a system that does it quietly in the background. I just teach now.",
+    color:  '#1B4D5A',  // deep teal
+    text:   '#F4E4C1',  // cream
+    accent: '#DC5828',
   },
   {
     name: 'Esme Hartwell',
-    company: 'North Loom Jewelry',
+    company: 'North Loom',
     role: 'Founder',
     location: 'Santa Fe, NM',
-    industry: 'Handmade Goods',
-    quote: "My old site felt like a craft fair table. Raff rebuilt it so it feels like the jewelry — quiet, considered, expensive. Sales nearly doubled in two months.",
+    industry: 'Jewelry',
     metric: '+90% online sales',
+    quote: "My old site felt like a craft fair table. Raff rebuilt it so it feels like the jewelry — quiet, considered, expensive. Sales nearly doubled in two months.",
+    color:  '#C97B91',  // dusty rose
+    text:   '#3A0F1A',  // wine
+    accent: '#F4E4C1',
   },
 ]
 
-const CARD_COUNT = TESTIMONIALS.length
-const ANGLE_PER_CARD = 360 / CARD_COUNT
+// ─── Animation constants ────────────────────────────────────
+const FLIP_DURATION = 0.95   // seconds per flip
+const FLIP_HOLD     = 4.5    // seconds each side stays visible
 
-const StarRow = () => (
-  <div style={{ display: 'flex', gap: '2px' }}>
-    {[...Array(5)].map((_, i) => (
-      <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="#FBBF24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-      </svg>
-    ))}
-  </div>
-)
-
-const CardFront = ({ t }) => (
+// ─── Card face shells ──────────────────────────────────────
+const Face = ({ children, color, rotated, style }) => (
   <div style={{
     position: 'absolute',
     inset: 0,
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
-    borderRadius: '20px',
+    transform: rotated ? 'rotateY(180deg)' : 'rotateY(0deg)',
+    background: color,
+    borderRadius: 'clamp(18px, 2vw, 26px)',
     overflow: 'hidden',
+    boxShadow: '0 18px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '32px 24px',
-    background: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(59,130,246,0.08) 40%, rgba(236,72,153,0.10) 100%)',
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
-    border: '1px solid rgba(255,255,255,0.12)',
-    boxShadow: `
-      0 8px 32px rgba(139,92,246,0.15),
-      0 0 0 1px rgba(255,255,255,0.05),
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      inset 0 -1px 0 rgba(0,0,0,0.1)
-    `,
+    padding: 'clamp(22px, 3vw, 30px)',
+    ...style,
   }}>
-    {/* glass shimmer */}
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '45%',
-      background: 'linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%)',
-      borderRadius: '20px 20px 0 0',
-      pointerEvents: 'none',
-    }} />
-
-    {/* avatar */}
-    <div style={{
-      width: '64px',
-      height: '64px',
-      borderRadius: '50%',
-      background: 'linear-gradient(135deg, rgba(139,92,246,0.35), rgba(236,72,153,0.35))',
-      border: '2px solid rgba(255,255,255,0.18)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.85rem',
-      fontWeight: 700,
-      color: '#fff',
-      letterSpacing: '0.05em',
-      marginBottom: '16px',
-      boxShadow: '0 4px 20px rgba(139,92,246,0.3)',
-      position: 'relative',
-      zIndex: 1,
-    }}>
-      {t.name.split(' ').map(n => n[0]).join('')}
-    </div>
-
-    {/* name */}
-    <div style={{
-      fontFamily: 'var(--font-body)',
-      fontWeight: 700,
-      fontSize: '1.05rem',
-      color: '#fff',
-      textAlign: 'center',
-      lineHeight: 1.3,
-      marginBottom: '4px',
-      position: 'relative',
-      zIndex: 1,
-    }}>
-      {t.name}
-    </div>
-
-    {/* role */}
-    <div style={{
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.65rem',
-      color: 'rgba(255,255,255,0.55)',
-      letterSpacing: '0.06em',
-      textAlign: 'center',
-      marginBottom: '12px',
-      position: 'relative',
-      zIndex: 1,
-    }}>
-      {t.role} · {t.location}
-    </div>
-
-    {/* company */}
-    <div style={{
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.68rem',
-      color: 'rgba(196,181,253,0.9)',
-      letterSpacing: '0.04em',
-      textAlign: 'center',
-      marginBottom: '16px',
-      position: 'relative',
-      zIndex: 1,
-    }}>
-      {t.company}
-    </div>
-
-    {/* stars */}
-    <div style={{ marginBottom: '16px', position: 'relative', zIndex: 1 }}>
-      <StarRow />
-    </div>
-
-    {/* industry pill */}
-    <div style={{
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.55rem',
-      letterSpacing: '0.12em',
-      textTransform: 'uppercase',
-      color: 'rgba(196,181,253,0.8)',
-      background: 'rgba(139,92,246,0.12)',
-      border: '1px solid rgba(139,92,246,0.2)',
-      borderRadius: '100px',
-      padding: '5px 14px',
-      marginBottom: '20px',
-      position: 'relative',
-      zIndex: 1,
-    }}>
-      {t.industry}
-    </div>
-
-    {/* metric badge */}
-    <div style={{
-      fontFamily: 'var(--font-mono)',
-      fontSize: '1.1rem',
-      fontWeight: 700,
-      color: '#C8F400',
-      textAlign: 'center',
-      position: 'relative',
-      zIndex: 1,
-      textShadow: '0 0 20px rgba(200,244,0,0.3)',
-    }}>
-      {t.metric}
-    </div>
-
-    {/* tap hint */}
-    <div style={{
-      position: 'absolute',
-      bottom: '14px',
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.5rem',
-      letterSpacing: '0.15em',
-      textTransform: 'uppercase',
-      color: 'rgba(255,255,255,0.25)',
-      zIndex: 1,
-    }}>
-      click to read
-    </div>
+    {children}
   </div>
 )
 
-const CardBack = ({ t }) => (
-  <div style={{
-    position: 'absolute',
-    inset: 0,
-    backfaceVisibility: 'hidden',
-    WebkitBackfaceVisibility: 'hidden',
-    transform: 'rotateY(180deg)',
-    borderRadius: '20px',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    padding: '28px 22px',
-    background: 'linear-gradient(135deg, rgba(236,72,153,0.14) 0%, rgba(139,92,246,0.10) 50%, rgba(59,130,246,0.12) 100%)',
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
-    border: '1px solid rgba(255,255,255,0.12)',
-    boxShadow: `
-      0 8px 32px rgba(236,72,153,0.15),
-      0 0 0 1px rgba(255,255,255,0.05),
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      inset 0 -1px 0 rgba(0,0,0,0.1)
-    `,
-  }}>
-    {/* glass shimmer */}
+// ─── Front of card (the bold identity) ──────────────────────
+const Front = ({ t }) => (
+  <Face color={t.color}>
+    {/* tiny label top */}
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <span style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.62rem',
+        letterSpacing: '0.22em',
+        textTransform: 'uppercase',
+        color: t.text,
+        opacity: 0.7,
+      }}>
+        {t.industry}
+      </span>
+      <span style={{
+        width: 8, height: 8, borderRadius: '50%',
+        background: t.accent,
+        boxShadow: `0 0 12px ${t.accent}66`,
+      }} />
+    </div>
+
+    {/* HUGE company name — the chunky type the video uses */}
     <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '40%',
-      background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%)',
-      borderRadius: '20px 20px 0 0',
-      pointerEvents: 'none',
-    }} />
-
-    {/* big quote mark */}
-    <span style={{
-      fontFamily: 'var(--font-display)',
-      fontSize: '3rem',
-      lineHeight: 1,
-      color: 'rgba(236,72,153,0.4)',
-      marginBottom: '8px',
-      position: 'relative',
-      zIndex: 1,
-    }}>&ldquo;</span>
-
-    {/* quote */}
-    <p style={{
-      fontFamily: 'var(--font-body)',
-      fontSize: 'clamp(0.78rem, 1.2vw, 0.88rem)',
-      lineHeight: 1.75,
-      color: 'rgba(255,255,255,0.9)',
-      position: 'relative',
-      zIndex: 1,
       flex: 1,
-    }}>
-      {t.quote}
-    </p>
-
-    {/* divider */}
-    <div style={{
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(236,72,153,0.3), rgba(139,92,246,0.3), transparent)',
-      margin: '14px 0',
-    }} />
-
-    {/* bottom info */}
-    <div style={{
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'flex-start',
+      paddingTop: 'clamp(20px, 3vh, 36px)',
+    }}>
+      <h3 style={{
+        fontFamily: 'var(--font-display)',
+        fontWeight: 900,
+        fontSize: 'clamp(2.2rem, 4.4vw, 3.6rem)',
+        lineHeight: 0.95,
+        letterSpacing: '-0.03em',
+        color: t.text,
+        margin: 0,
+      }}>
+        {t.company}
+      </h3>
+    </div>
+
+    {/* footer row */}
+    <div style={{
+      display: 'flex',
       justifyContent: 'space-between',
-      position: 'relative',
-      zIndex: 1,
+      alignItems: 'flex-end',
+      paddingTop: 'clamp(16px, 2.4vw, 24px)',
+      borderTop: `1px solid ${t.text}33`,
     }}>
       <div>
         <div style={{
-          fontFamily: 'var(--font-body)',
-          fontWeight: 600,
-          fontSize: '0.78rem',
-          color: '#fff',
+          fontFamily: 'var(--font-display)',
+          fontStyle: 'italic',
+          fontSize: 'clamp(0.95rem, 1.3vw, 1.1rem)',
+          color: t.text,
+          opacity: 0.95,
         }}>
           {t.name}
         </div>
         <div style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.55rem',
-          color: 'rgba(255,255,255,0.45)',
-          letterSpacing: '0.04em',
+          fontSize: '0.6rem',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: t.text,
+          opacity: 0.55,
+          marginTop: '4px',
+        }}>
+          {t.role} · {t.location}
+        </div>
+      </div>
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.78rem',
+        fontWeight: 600,
+        color: t.accent,
+        letterSpacing: '0.02em',
+      }}>
+        {t.metric}
+      </div>
+    </div>
+  </Face>
+)
+
+// ─── Back of card (the quote) ───────────────────────────────
+const Back = ({ t }) => (
+  <Face color={t.color} rotated>
+    <span style={{
+      fontFamily: 'var(--font-display)',
+      fontStyle: 'italic',
+      fontSize: '3rem',
+      lineHeight: 0.7,
+      color: t.accent,
+      opacity: 0.85,
+    }}>
+      &ldquo;
+    </span>
+
+    <p style={{
+      flex: 1,
+      fontFamily: 'var(--font-display)',
+      fontStyle: 'italic',
+      fontSize: 'clamp(0.98rem, 1.35vw, 1.18rem)',
+      lineHeight: 1.45,
+      color: t.text,
+      margin: '8px 0 0',
+    }}>
+      {t.quote}
+    </p>
+
+    <div style={{
+      marginTop: 'clamp(14px, 2vw, 20px)',
+      paddingTop: '14px',
+      borderTop: `1px solid ${t.text}33`,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+    }}>
+      <div>
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 700,
+          fontSize: '0.92rem',
+          color: t.text,
+        }}>
+          {t.name}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.58rem',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: t.text,
+          opacity: 0.55,
+          marginTop: '3px',
         }}>
           {t.company}
         </div>
       </div>
       <div style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: '0.85rem',
-        fontWeight: 700,
-        color: '#C8F400',
-        textShadow: '0 0 16px rgba(200,244,0,0.3)',
+        fontSize: '0.78rem',
+        fontWeight: 600,
+        color: t.accent,
       }}>
         {t.metric}
       </div>
     </div>
+  </Face>
+)
 
-    {/* tap hint */}
-    <div style={{
-      position: 'absolute',
-      bottom: '12px',
-      left: 0,
-      right: 0,
-      textAlign: 'center',
-      fontFamily: 'var(--font-mono)',
-      fontSize: '0.5rem',
-      letterSpacing: '0.15em',
-      textTransform: 'uppercase',
-      color: 'rgba(255,255,255,0.2)',
-    }}>
-      click to flip back
+// ─── Single card with auto-flip ─────────────────────────────
+const FlipCard = ({ t, innerRef, outerRef }) => (
+  <div
+    ref={outerRef}
+    style={{
+      perspective: '1600px',
+      aspectRatio: '4 / 5',
+      width: '100%',
+      willChange: 'transform',
+    }}
+  >
+    <div
+      ref={innerRef}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        transformStyle: 'preserve-3d',
+      }}
+    >
+      <Front t={t} />
+      <Back  t={t} />
     </div>
   </div>
 )
 
+// ─── Section ────────────────────────────────────────────────
 const TestimonialSection = () => {
   const sectionRef = useRef(null)
-  const carouselRef = useRef(null)
-  const [flipped, setFlipped] = useState({})
-  const cardInnerRefs = useRef([])
-  const getRadius = () => typeof window !== 'undefined'
-    ? (window.innerWidth < 640 ? 240 : window.innerWidth < 1024 ? 340 : 420)
-    : 420
-  const [radius, setRadius] = useState(getRadius)
-
-  const handleFlip = useCallback((idx) => {
-    const inner = cardInnerRefs.current[idx]
-    if (!inner) return
-
-    const isFlipped = flipped[idx]
-    gsap.to(inner, {
-      rotateY: isFlipped ? 0 : 180,
-      duration: 0.7,
-      ease: 'power2.inOut',
-    })
-
-    setFlipped(prev => ({ ...prev, [idx]: !prev[idx] }))
-  }, [flipped])
+  const headingRef = useRef(null)
+  const rowRefs    = useRef([])
+  const innerRefs  = useRef([])
+  const outerRefs  = useRef([])
 
   useEffect(() => {
-    const section = sectionRef.current
-    const carousel = carouselRef.current
-    if (!section || !carousel) return
-
     const ctx = gsap.context(() => {
-      gsap.set(carousel, { rotateY: 0 })
 
-      gsap.to(carousel, {
-        rotateY: 360,
-        ease: 'none',
+      // 1. AUTO-FLIP — each card on its own loop, randomised offset
+      innerRefs.current.forEach((inner, i) => {
+        if (!inner) return
+        const tl = gsap.timeline({ repeat: -1, delay: Math.random() * 3 + i * 0.4 })
+        tl.to(inner, { rotateY: 180, duration: FLIP_DURATION, ease: 'power2.inOut' })
+          .to(inner, { rotateY: 180, duration: FLIP_HOLD })   // hold back
+          .to(inner, { rotateY: 360, duration: FLIP_DURATION, ease: 'power2.inOut' })
+          .to(inner, { rotateY: 360, duration: FLIP_HOLD + Math.random() * 2 }) // hold front
+          .set(inner, { rotateY: 0 })   // reset for clean repeat
+      })
+
+      // 2. ENTRANCE — cards rise + fade in when section enters viewport
+      gsap.from(outerRefs.current.filter(Boolean), {
+        y: 90,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'power3.out',
+        stagger: { each: 0.08, from: 'random' },
         scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: `+=${CARD_COUNT * 600}`,
-          pin: true,
-          scrub: 1.2,
-          anticipatePin: 1,
+          trigger: sectionRef.current,
+          start: 'top 75%',
         },
       })
-    }, section)
 
-    const onResize = () => {
-      setRadius(getRadius())
-      ScrollTrigger.refresh()
-    }
-    window.addEventListener('resize', onResize)
+      gsap.from(headingRef.current, {
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: headingRef.current,
+          start: 'top 85%',
+        },
+      })
 
-    return () => {
-      ctx.revert()
-      window.removeEventListener('resize', onResize)
-    }
+      // 3. ROW PARALLAX — each row drifts at a different rate while
+      //    the section moves through the viewport. Gives the "mould"
+      //    depth feel the user asked for.
+      const parallaxRates = [-60, 30]   // row 1 drifts up, row 2 drifts down
+      rowRefs.current.forEach((row, i) => {
+        if (!row) return
+        gsap.fromTo(row,
+          { y: -parallaxRates[i] / 2 },
+          {
+            y: parallaxRates[i] / 2,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top bottom',
+              end:   'bottom top',
+              scrub: 1,
+            },
+          }
+        )
+      })
+
+    }, sectionRef)
+
+    return () => ctx.revert()
   }, [])
+
+  // Split testimonials into two rows of three
+  const row1 = TESTIMONIALS.slice(0, 3)
+  const row2 = TESTIMONIALS.slice(3, 6)
+  const rowGroups = [row1, row2]
 
   return (
     <section
@@ -417,166 +383,120 @@ const TestimonialSection = () => {
       ref={sectionRef}
       style={{
         position: 'relative',
-        height: '100vh',
+        background: '#070708',
+        paddingTop:    'clamp(100px, 14vh, 180px)',
+        paddingBottom: 'clamp(120px, 16vh, 200px)',
         overflow: 'hidden',
-        background: 'linear-gradient(180deg, #0A0A0A 0%, #0c0a14 50%, #0A0A0A 100%)',
       }}
     >
-      {/* ambient glow blobs */}
+      {/* ambient halos */}
       <div aria-hidden="true" style={{
         position: 'absolute',
-        top: '20%',
-        left: '15%',
-        width: '400px',
-        height: '400px',
+        top: '10%', left: '5%',
+        width: 520, height: 520,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)',
-        filter: 'blur(60px)',
+        background: 'radial-gradient(circle, rgba(167,139,250,0.10) 0%, transparent 70%)',
+        filter: 'blur(80px)',
         pointerEvents: 'none',
       }} />
       <div aria-hidden="true" style={{
         position: 'absolute',
-        bottom: '15%',
-        right: '10%',
-        width: '350px',
-        height: '350px',
+        bottom: '5%', right: '5%',
+        width: 460, height: 460,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(236,72,153,0.07) 0%, transparent 70%)',
-        filter: 'blur(60px)',
+        background: 'radial-gradient(circle, rgba(220,88,40,0.09) 0%, transparent 70%)',
+        filter: 'blur(80px)',
         pointerEvents: 'none',
       }} />
 
       {/* heading */}
-      <div style={{
-        position: 'absolute',
-        top: 'clamp(50px, 7vh, 90px)',
-        left: 0,
-        right: 0,
-        textAlign: 'center',
-        zIndex: 20,
-      }}>
-        <p className="section-label" style={{ marginBottom: 'var(--space-3)' }}>
-          {'// testimonials'}
+      <div
+        ref={headingRef}
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 clamp(20px, 4vw, 48px)',
+          marginBottom: 'clamp(60px, 8vh, 100px)',
+          position: 'relative',
+          zIndex: 2,
+        }}
+      >
+        <p style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.7rem',
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          color: 'rgba(245,242,236,0.4)',
+          marginBottom: '18px',
+        }}>
+          // testimonials
         </p>
-        <h2
-          className="text-display"
-          style={{
-            fontSize: 'clamp(2.2rem, 6vw, 4.5rem)',
-            lineHeight: 1.08,
-            color: 'var(--color-text-primary)',
-          }}
-        >
-          What Our{' '}
-          <span style={{
-            color: 'var(--color-accent)',
+        <h2 style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 400,
+          fontSize: 'clamp(2.6rem, 6.5vw, 5rem)',
+          lineHeight: 1.02,
+          letterSpacing: '-0.02em',
+          color: 'var(--color-text-primary)',
+          maxWidth: '900px',
+        }}>
+          Real people.{' '}
+          <em style={{
             fontStyle: 'italic',
-            fontFamily: 'var(--font-mono)',
+            color: 'var(--color-accent)',
           }}>
-            Clients
-          </span>{' '}
-          Say
+            Real shifts.
+          </em>
         </h2>
       </div>
 
-      {/* 3D carousel */}
+      {/* card rows */}
       <div style={{
-        position: 'absolute',
-        top: '55%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        perspective: '1200px',
-        perspectiveOrigin: 'center center',
-        width: '260px',
-        height: '360px',
-        zIndex: 10,
+        maxWidth: '1280px',
+        margin: '0 auto',
+        padding: '0 clamp(20px, 4vw, 48px)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'clamp(24px, 3vw, 36px)',
+        position: 'relative',
+        zIndex: 1,
       }}>
-        <div
-          ref={carouselRef}
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'relative',
-            transformStyle: 'preserve-3d',
-            transform: 'rotateY(0deg)',
-          }}
-        >
-          {TESTIMONIALS.map((t, i) => {
-            const angle = ANGLE_PER_CARD * i
-            return (
-              <div
-                key={i}
-                onClick={() => handleFlip(i)}
-                style={{
-                  position: 'absolute',
-                  width: '240px',
-                  height: '340px',
-                  left: '50%',
-                  top: '50%',
-                  marginLeft: '-120px',
-                  marginTop: '-170px',
-                  transformStyle: 'preserve-3d',
-                  transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
-                  cursor: 'pointer',
-                }}
-              >
-                {/* inner flipper */}
-                <div
-                  ref={el => cardInnerRefs.current[i] = el}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    position: 'relative',
-                    transformStyle: 'preserve-3d',
-                    transition: 'none',
-                  }}
-                >
-                  <CardFront t={t} />
-                  <CardBack t={t} />
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        {rowGroups.map((row, rowIdx) => (
+          <div
+            key={rowIdx}
+            ref={el => rowRefs.current[rowIdx] = el}
+            className="testimonial-row"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: 'clamp(20px, 2.4vw, 32px)',
+              willChange: 'transform',
+            }}
+          >
+            {row.map((t, colIdx) => {
+              const flatIdx = rowIdx * 3 + colIdx
+              return (
+                <FlipCard
+                  key={flatIdx}
+                  t={t}
+                  innerRef={el => innerRefs.current[flatIdx] = el}
+                  outerRef={el => outerRefs.current[flatIdx] = el}
+                />
+              )
+            })}
+          </div>
+        ))}
       </div>
-
-      {/* scroll hint */}
-      <div style={{
-        position: 'absolute',
-        bottom: 'clamp(20px, 4vh, 40px)',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        textAlign: 'center',
-        zIndex: 20,
-      }}>
-        <p className="text-mono" style={{
-          fontSize: '0.6rem',
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.2)',
-        }}>
-          scroll to rotate · click to flip
-        </p>
-      </div>
-
-      {/* background grid */}
-      <div aria-hidden="true" style={{
-        position: 'absolute',
-        inset: 0,
-        backgroundImage: `
-          linear-gradient(var(--color-border) 1px, transparent 1px),
-          linear-gradient(90deg, var(--color-border) 1px, transparent 1px)
-        `,
-        backgroundSize: '80px 80px',
-        opacity: 0.08,
-        pointerEvents: 'none',
-        maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 70%)',
-        zIndex: 0,
-      }} />
 
       <style>{`
-        @media (max-width: 639px) {
-          #testimonials [style*="perspective"] {
-            perspective: 800px !important;
+        @media (max-width: 900px) {
+          .testimonial-row {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 580px) {
+          .testimonial-row {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>
