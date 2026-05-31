@@ -76,6 +76,23 @@ const PACKAGES = [
     ],
     accent: '#7B61FF',  // ← purple for the premium tier
   },
+  {
+    id:       'diagnostic',
+    problem:  '"Something is wrong with my business — help me fix it. It\'s stale and not growing."',
+    for:      'Established owner stuck in a plateau',
+    name:     'Growth Diagnostic',
+    phases:   'Audit + Targeted Fix',
+    pitch:    'I will audit your business end-to-end — offer, funnel, ops, content — find the actual bottleneck killing your growth, and install the specific fix. No guessing, no fluff.',
+    includes: [
+      'Full Business & Funnel Audit',
+      'Bottleneck & Leak Report',
+      'Offer + Positioning Review',
+      'Ops & Systems Health Check',
+      'Marketing & Content Diagnostic',
+      'Prioritised 30-Day Fix Roadmap',
+    ],
+    accent: '#3DA9FC',  // ← blue for the diagnostic tier
+  },
 ]
 
 // ─────────────────────────────────────────────────────────────

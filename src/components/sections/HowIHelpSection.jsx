@@ -35,7 +35,7 @@ const PHASES = [
       { name: 'ICP Workshop',         desc: '1-hour deep session to define exactly who your customer is.' },
       { name: 'Core Message Guide',   desc: 'Your tagline, elevator pitch, and Unique Value Proposition.' },
       { name: 'Competitor Gap Report', desc: '3–5 competitors analysed. Where you can win, clearly mapped.' },
-      { name: 'Landing Page',         desc: 'High-speed, conversion-optimised 1-page site (Framer/Webflow).' },
+      { name: 'Landing Page',         desc: 'High-speed, conversion-optimised 1-page site (built with Next.js / GSAP ScrollTrigger).' },
       { name: 'Branding Kit',         desc: 'Logo, color palette, typography. US-standard professional look.' },
     ],
   },
@@ -43,7 +43,8 @@ const PHASES = [
     number:  '02',
     label:   'Phase Two',
     title:   'The Chaos-Killer Engine',
-    subtitle: 'Automate the work so the business runs without you.',
+    subtitle: 'Build systems for your business that smooth the workflow and boost efficiency.',
+    note:    'Every industry runs differently — the system we build is shaped to your specific operation, not a generic template.',
     tag:     'The Body',
     duration: '5 days',
     deliverables: [
@@ -59,7 +60,7 @@ const PHASES = [
     number:  '03',
     label:   'Phase Three',
     title:   'The Visibility Architecture',
-    subtitle: 'Bring real people into the system you just built.',
+    subtitle: 'In today\'s age, content is the best marketing — we help you create it, and teach you how to keep it running yourself.',
     tag:     'The Fuel',
     duration: '7 days',
     deliverables: [
@@ -216,6 +217,22 @@ const HowIHelpSection = () => {
                 }}>
                   {phase.subtitle}
                 </p>
+
+                {phase.note && (
+                  <p style={{
+                    fontFamily:   'var(--font-mono)',
+                    fontSize:     'var(--text-xs)',
+                    color:        'var(--color-accent)',
+                    lineHeight:   1.6,
+                    padding:      'var(--space-3) var(--space-4)',
+                    border:       '1px solid rgba(200,244,0,0.2)',
+                    borderRadius: '2px',
+                    background:   'var(--color-accent-dim)',
+                    marginBottom: 'var(--space-6)',
+                  }}>
+                    Note: {phase.note}
+                  </p>
+                )}
 
                 {/* Meta: duration */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>

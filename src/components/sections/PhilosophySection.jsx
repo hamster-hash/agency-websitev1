@@ -23,11 +23,12 @@ gsap.registerPlugin(ScrollTrigger)
 
 // Quote broken into lines for fine-grained animation control
 const QUOTE_PARTS = [
-  { text: 'Tech is 40% of it.',        accent: false },
-  { text: 'The rest is understanding', accent: false },
-  { text: 'your market,',              accent: true  },
-  { text: 'your customer,',            accent: true  },
-  { text: 'and your chaos.',           accent: true  },
+  { text: 'We bridge the gap',          accent: false },
+  { text: 'between business and tech.', accent: false },
+  { text: 'Tech is just 40% of it —',   accent: false },
+  { text: 'understanding your market,', accent: true  },
+  { text: 'analysing your business,',   accent: true  },
+  { text: 'comes first.',               accent: true  },
 ]
 
 // Ticker items — will repeat to fill the screen
