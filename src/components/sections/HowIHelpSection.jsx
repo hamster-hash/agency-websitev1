@@ -18,6 +18,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CursorGradient from '@/components/ui/CursorGradient'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -30,7 +31,7 @@ const PHASES = [
     title:   'The Authority & Strategy',
     subtitle: 'Build trust before they even talk to you.',
     tag:     'The Brain',
-    duration: '10 days',
+    duration: '5 days',
     deliverables: [
       { name: 'ICP Workshop',         desc: '1-hour deep session to define exactly who your customer is.' },
       { name: 'Core Message Guide',   desc: 'Your tagline, elevator pitch, and Unique Value Proposition.' },
@@ -46,7 +47,7 @@ const PHASES = [
     subtitle: 'Build systems for your business that smooth the workflow and boost efficiency.',
     note:    'Every industry runs differently — the system we build is shaped to your specific operation, not a generic template.',
     tag:     'The Body',
-    duration: '5 days',
+    duration: '10 days',
     deliverables: [
       { name: 'Missed Call Text-Back', desc: 'Auto-SMS fires within seconds of a missed call. No lead left behind.' },
       { name: '24/7 Automated Booking', desc: 'Calendar integration with payments, time zones, and reminders.' },
@@ -108,11 +109,15 @@ const HowIHelpSection = () => {
 
   return (
     <section id="how" style={{
-      background:  'linear-gradient(170deg, #101214 0%, #0E1110 40%, #121416 100%)',
+      position:    'relative',
+      overflow:    'hidden',
+      background:  'linear-gradient(170deg, #0A0F14 0%, #0C1218 40%, #0A1015 100%)',
       borderTop:   '1px solid var(--color-border)',
       paddingTop:  'var(--space-24)',
       paddingBottom: 'var(--space-32)',
     }}>
+      <CursorGradient color="#3DA9D9" opacity={0.32} size={900} />
+
       <div className="container">
 
         {/* ── Section Header ─────────────────────────────────── */}

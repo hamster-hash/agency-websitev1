@@ -27,7 +27,7 @@ const SUBTEXT         = 'Free 30-minute diagnostic call. No pitch. Just clarity.
 const CTA_TEXT        = '→ Book your free call'
 const CTA_HREF        = 'https://calendly.com/reachbyraff'
 
-const CONTACT_EMAIL   = 'raffsenseireach@gmail.com'
+const CONTACT_EMAIL   = 'raff@reachbyraff.com'
 
 const SOCIALS = [
   { label: 'Instagram', href: 'https://www.instagram.com/raff_senseii/' },

@@ -16,6 +16,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CursorGradient from '@/components/ui/CursorGradient'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -64,6 +65,26 @@ const DiagnosisSection = () => {
     const track   = trackRef.current
     if (!wrapper || !track) return
 
+    // Mobile: skip the horizontal pin entirely — CSS lays the cards
+    // out as a vertical stack instead. The pin-scroll feels broken
+    // on touch devices because it hijacks vertical scroll into
+    // horizontal motion.
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      // Still fade in the closing line as it enters view
+      const ctx = gsap.context(() => {
+        if (closingRef.current) {
+          gsap.fromTo(closingRef.current,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+              scrollTrigger: { trigger: closingRef.current, start: 'top 85%' },
+            }
+          )
+        }
+      }, wrapperRef)
+      return () => ctx.revert()
+    }
+
     const ctx = gsap.context(() => {
       const getScrollDistance = () => track.scrollWidth - window.innerWidth
 
@@ -104,10 +125,13 @@ const DiagnosisSection = () => {
       id="diagnosis"
       ref={wrapperRef}
       style={{
+        position: 'relative',
         overflow: 'hidden',
-        background: 'linear-gradient(180deg, #0F0F12 0%, #141418 50%, #0F1014 100%)',
+        background: 'linear-gradient(180deg, #110A0A 0%, #1A1012 50%, #110A0B 100%)',
       }}
     >
+      <CursorGradient color="#FF5544" opacity={0.30} />
+
       {/* ── Section label ─────────────────────────────────────── */}
       <div style={{
         padding:    'var(--space-12) var(--space-8) var(--space-8)',

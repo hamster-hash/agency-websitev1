@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
 const INTERACTIVE_SELECTOR = 'a, button, [data-cursor-expand], .package-card, .diagnosis-card'
@@ -8,8 +8,17 @@ const INTERACTIVE_SELECTOR = 'a, button, [data-cursor-expand], .package-card, .d
 const CustomCursor = () => {
   const dotRef  = useRef(null)
   const ringRef = useRef(null)
+  const [hasHover, setHasHover] = useState(false)
+
+  // Skip on touch devices — no cursor to follow
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
+      setHasHover(true)
+    }
+  }, [])
 
   useEffect(() => {
+    if (!hasHover) return
     const dot  = dotRef.current
     const ring = ringRef.current
     if (!dot || !ring) return
@@ -47,7 +56,9 @@ const CustomCursor = () => {
       document.removeEventListener('mouseover', onMouseOver)
       document.removeEventListener('mouseout', onMouseOut)
     }
-  }, [])
+  }, [hasHover])
+
+  if (!hasHover) return null
 
   return (
     <>

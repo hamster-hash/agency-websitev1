@@ -17,6 +17,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CursorGradient from '@/components/ui/CursorGradient'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -383,12 +384,14 @@ const TestimonialSection = () => {
       ref={sectionRef}
       style={{
         position: 'relative',
-        background: '#070708',
+        background: 'linear-gradient(180deg, #0C0709 0%, #100A0E 50%, #0A0608 100%)',
         paddingTop:    'clamp(100px, 14vh, 180px)',
         paddingBottom: 'clamp(120px, 16vh, 200px)',
         overflow: 'hidden',
       }}
     >
+      <CursorGradient color="#EC4899" opacity={0.26} size={900} />
+
       {/* ambient halos */}
       <div aria-hidden="true" style={{
         position: 'absolute',

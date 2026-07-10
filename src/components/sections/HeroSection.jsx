@@ -112,11 +112,14 @@ const HeroSection = () => {
   }, [])
 
   // ─── 3. Scroll: Headline DOWN ←→ Mascot UP (synced scrub) ───
+  //   Desktop only. The pin/scale dance feels cramped on phones,
+  //   so we skip it under 768px and let the section scroll normally.
   useEffect(() => {
     const section  = sectionRef.current
     const headline = headlineRef.current
     const mascot   = mascotRef.current
     if (!section || !headline || !mascot) return
+    if (typeof window !== 'undefined' && window.innerWidth < 768) return
 
     const ctx = gsap.context(() => {
       gsap.set(mascot, {
@@ -227,7 +230,8 @@ const HeroSection = () => {
           position:      'absolute',
           bottom:        0,
           right:         '5vw',
-          width:         'clamp(200px, 26vw, 400px)',
+          width:         'clamp(140px, 26vw, 400px)',
+          opacity:       1,
           pointerEvents: 'none',
           userSelect:    'none',
           zIndex:        2,

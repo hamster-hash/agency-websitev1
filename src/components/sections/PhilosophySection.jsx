@@ -16,6 +16,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CursorGradient from '@/components/ui/CursorGradient'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -77,13 +78,15 @@ const PhilosophySection = () => {
 
   return (
     <section id="philosophy" style={{
-      background:     'linear-gradient(175deg, #12100E 0%, #141210 40%, #100E12 100%)',
+      background:     'linear-gradient(175deg, #0C0A14 0%, #100C18 40%, #0B0A12 100%)',
       borderTop:      '1px solid var(--color-border)',
       paddingTop:     'var(--space-32)',
       paddingBottom:  0,
       overflow:       'hidden',
       position:       'relative',
     }}>
+      <CursorGradient color="#A78BFA" opacity={0.30} size={850} />
+
       {/* ── Large Background Text (decorative) ───────────────── */}
       <div aria-hidden="true" style={{
         position:   'absolute',
