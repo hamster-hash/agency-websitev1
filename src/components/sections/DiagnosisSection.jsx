@@ -68,10 +68,21 @@ const DiagnosisSection = () => {
     // Mobile: skip the horizontal pin entirely — CSS lays the cards
     // out as a vertical stack instead. The pin-scroll feels broken
     // on touch devices because it hijacks vertical scroll into
-    // horizontal motion.
+    // horizontal motion. BUT — we still give the mobile user the
+    // reveal energy: each card fades + slides up as it enters the
+    // viewport, so it never feels like a dead vertical list.
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      // Still fade in the closing line as it enters view
       const ctx = gsap.context(() => {
+        const cards = track.querySelectorAll('.diagnosis-card')
+        cards.forEach((card) => {
+          gsap.fromTo(card,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+              scrollTrigger: { trigger: card, start: 'top 88%' },
+            }
+          )
+        })
         if (closingRef.current) {
           gsap.fromTo(closingRef.current,
             { opacity: 0, y: 30 },

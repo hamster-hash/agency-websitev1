@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 const LINKS = [
   { href: '#diagnosis',    label: 'Diagnosis'    },
@@ -16,8 +17,17 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar" aria-label="Primary">
-        <a href="#hero" className="navbar-brand">
-          Re<span>:</span>ACH
+        <a href="#hero" className="navbar-brand" aria-label="Re:ACH home">
+          <Image
+            src="/transparent.png"
+            alt="Re:ACH"
+            width={2000}
+            height={1055}
+            priority
+            sizes="(max-width: 768px) 140px, 200px"
+            className="navbar-logo"
+          />
+          <span className="navbar-brand-tag">an agency only for business owners</span>
         </a>
 
         <ul className="navbar-links">
@@ -28,7 +38,12 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <a href="https://calendly.com/reachbyraff" target="_blank" rel="noopener noreferrer" className="btn-primary navbar-cta">
+        <a
+          href="https://calendly.com/reachbyraff"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="navbar-cta"
+        >
           → Book a call
         </a>
 
@@ -48,7 +63,13 @@ const Navbar = () => {
             {label}
           </a>
         ))}
-        <a href="https://calendly.com/reachbyraff" target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} style={{ color: 'var(--color-accent)' }}>
+        <a
+          href="https://calendly.com/reachbyraff"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setMobileOpen(false)}
+          className="navbar-mobile-cta"
+        >
           → Book a call
         </a>
       </div>

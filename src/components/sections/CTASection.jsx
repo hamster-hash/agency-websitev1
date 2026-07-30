@@ -14,6 +14,7 @@
 // ============================================================
 
 import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -30,7 +31,7 @@ const CTA_HREF        = 'https://calendly.com/reachbyraff'
 const CONTACT_EMAIL   = 'raff@reachbyraff.com'
 
 const SOCIALS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/raff_senseii/' },
+  { label: 'Instagram', href: 'https://www.instagram.com/reach_byraff/' },
 ]
 
 // Footer note
@@ -150,6 +151,22 @@ const CTASection = () => {
           >
             {CTA_TEXT}
           </a>
+
+          {/* ── Trust strip — one client per city, no cold calls ── */}
+          <p className="text-mono" style={{
+            marginTop: 'var(--space-8)',
+            fontSize:  'var(--text-xs)',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color:     'var(--color-text-dim)',
+            maxWidth:  '640px',
+            margin:    'var(--space-8) auto 0',
+            lineHeight: 1.7,
+          }}>
+            one client per city, per industry. we pick you after looking at your potential.
+            <br />
+            we never cold call. we do our homework first.
+          </p>
 
           {/* ── Or email ────────────────────────────────────────── */}
           <p style={{

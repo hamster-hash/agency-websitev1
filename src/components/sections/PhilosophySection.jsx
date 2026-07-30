@@ -24,20 +24,22 @@ gsap.registerPlugin(ScrollTrigger)
 
 // Quote broken into lines for fine-grained animation control
 const QUOTE_PARTS = [
-  { text: 'We bridge the gap',          accent: false },
-  { text: 'between business and tech.', accent: false },
-  { text: 'Tech is just 40% of it —',   accent: false },
-  { text: 'understanding your market,', accent: true  },
-  { text: 'analysing your business,',   accent: true  },
-  { text: 'comes first.',               accent: true  },
+  { text: "We don't sell websites.",       accent: false },
+  { text: "We don't sell automations.",    accent: false },
+  { text: 'We sell the quiet',             accent: false },
+  { text: 'transformation',                accent: true  },
+  { text: 'your business',                 accent: false },
+  { text: 'has been quietly begging for.', accent: true  },
 ]
 
 // Ticker items — will repeat to fill the screen
 const TICKER_ITEMS = [
-  'BUSINESS ENGINEER',
-  'NOT A FREELANCER',
+  'TRANSFORMATION FIRST',
+  'NOT A WEBSITE SHOP',
   'NOT AN AGENCY',
+  'BUSINESS ENGINEER',
   'SYSTEMS THINKER',
+  'BEYOND THE TECH',
   'GROWTH PARTNER',
   'STRATEGY FIRST',
   'AUTOMATION NATIVE',
@@ -94,16 +96,17 @@ const PhilosophySection = () => {
         left:       '50%',
         transform:  'translate(-50%, -50%)',
         fontFamily: 'var(--font-display)',
-        fontSize:   'clamp(8rem, 20vw, 20rem)',
+        fontSize:   'clamp(4rem, 12vw, 13rem)',
         fontWeight: 900,
         color:      'var(--color-text-ghost)',
-        opacity:    0.15,
+        opacity:    0.12,
         whiteSpace: 'nowrap',
         userSelect: 'none',
         pointerEvents: 'none',
         lineHeight: 1,
+        letterSpacing: '-0.04em',
       }}>
-        WHY
+        TRANSFORM
       </div>
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
@@ -180,6 +183,80 @@ const PhilosophySection = () => {
             </svg>
             Watch on YouTube
           </a>
+        </div>
+
+        {/* ── Mission line ────────────────────────────────────── */}
+        <div style={{
+          marginTop: 'var(--space-16)',
+          maxWidth:  '820px',
+        }}>
+          <p className="section-label" style={{ marginBottom: 'var(--space-4)' }}>
+            {'// the mission'}
+          </p>
+          <p style={{
+            fontFamily: 'var(--font-display)',
+            fontSize:   'clamp(1.4rem, 2.4vw, 2.1rem)',
+            lineHeight: 1.3,
+            color:      'var(--color-text-primary)',
+            letterSpacing: '-0.01em',
+          }}>
+            our mission is to help business owners, so they can run their
+            {' '}<em style={{ color: 'var(--color-accent)' }}>dreams</em> smoothly.
+          </p>
+        </div>
+
+        {/* ── 3 pillars: TLT (Trust · Locality · Transparency) ── */}
+        <div style={{
+          marginTop: 'var(--space-16)',
+          padding:   'var(--space-8)',
+          border:    '1px solid rgba(200,244,0,0.15)',
+          borderRadius: '4px',
+          background: 'rgba(200,244,0,0.03)',
+        }}>
+          <p className="section-label" style={{ marginBottom: 'var(--space-6)' }}>
+            {'// the 3 pillars — TLT'}
+          </p>
+          <div className="tlt-grid" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 'var(--space-6)',
+          }}>
+            {[
+              { letter: 'T', word: 'Trust',        blurb: 'we do what we say, on time, on scope.' },
+              { letter: 'L', word: 'Locality',     blurb: 'one client per city, per industry. no exceptions.' },
+              { letter: 'T', word: 'Transparency', blurb: 'you see the plan, the numbers, and the work.' },
+            ].map((p, i) => (
+              <div key={i} style={{
+                borderLeft: '2px solid var(--color-accent)',
+                paddingLeft: 'var(--space-4)',
+              }}>
+                <div className="text-display" style={{
+                  fontSize: 'clamp(2rem, 4vw, 3rem)',
+                  color: 'var(--color-accent)',
+                  lineHeight: 1,
+                }}>
+                  {p.letter}
+                </div>
+                <p className="text-mono" style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text-primary)',
+                  marginTop: '6px',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                }}>
+                  {p.word}
+                </p>
+                <p style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-text-dim)',
+                  marginTop: '4px',
+                  lineHeight: 1.5,
+                }}>
+                  {p.blurb}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── Attribution ─────────────────────────────────────── */}

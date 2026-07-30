@@ -22,77 +22,68 @@ import CursorGradient from '@/components/ui/CursorGradient'
 gsap.registerPlugin(ScrollTrigger)
 
 // ─── Content ────────────────────────────────────────────────
+// Each card = an industry we transformed. No business names, no owner names.
+// Front  = industry + the "before state" they came to us with
+// Back   = the transformation — what we actually built + the result
 const TESTIMONIALS = [
   {
-    name: 'Danny Sanchez',
-    company: 'Sanchez & Sons',
-    role: 'Owner',
-    location: 'Austin, TX',
-    industry: 'Plumbing',
-    metric: '+40% revenue',
-    quote: "We kept missing calls and losing jobs. Raff built us a clean website and a system that books estimates for us, even at night. Felt like hiring two extra people.",
-    color:  '#0E3B2A',  // deep forest
-    text:   '#F0B5C4',  // soft pink
+    industry: 'Local plumbing',
+    region:   'North America',
+    before:   'Missed calls every hour.',
+    after:    'We wired a missed-call text-back, a 24/7 booking flow, and a locally-ranked site. Every ring now becomes a job on the calendar — even when the van is underground.',
+    metric:   '+40% booked jobs',
+    color:  '#0E3B2A',
+    text:   '#F0B5C4',
     accent: '#F2C811',
   },
   {
-    name: 'Maria Delgado',
-    company: 'Evergreen Co.',
-    role: 'Operations',
-    location: 'Phoenix, AZ',
-    industry: 'Landscaping',
-    metric: '2× close rate',
-    quote: "Our quotes used to take three days. Raff built us a system that sends them in three minutes. Clients are stunned, and we close twice as many jobs.",
-    color:  '#F2C811',  // bright yellow
-    text:   '#3D2E00',  // olive
+    industry: 'Boutique café',
+    region:   'Southern Europe',
+    before:   'Nobody knew they existed.',
+    after:    'A quiet, editorial site, a QR menu + booking flow, and a full local-search presence. Slow mornings became sold-out ones without hiring a single marketer.',
+    metric:   '+55% covers',
+    color:  '#F2C811',
+    text:   '#3D2E00',
     accent: '#0E3B2A',
   },
   {
-    name: 'Yuki Tanaka',
-    company: 'The Morning Fold',
-    role: 'Owner',
-    location: 'Portland, OR',
-    industry: 'Cafe',
-    metric: '+55% covers',
-    quote: "We were struggling with operations. Raff built us a beautiful website and a QR-based booking and menu system. The cafe runs itself on slow mornings now.",
-    color:  '#4A1D7A',  // royal purple
-    text:   '#7CFFB2',  // mint
+    industry: 'Yoga & wellness studio',
+    region:   'South Asia',
+    before:   'Class signups drowning the inbox.',
+    after:    'We replaced DM chaos with an automated class calendar, member portal, and quiet SMS reminders. The teacher went back to teaching. The system holds the rest.',
+    metric:   '+70% retention',
+    color:  '#4A1D7A',
+    text:   '#7CFFB2',
     accent: '#F2C811',
   },
   {
-    name: 'Priya Achar',
-    company: 'Flour & Fern',
-    role: 'Co-founder',
-    location: 'Asheville, NC',
-    industry: 'Bakery',
-    metric: '3× online orders',
-    quote: "Pre-orders used to be a mess of DMs and sticky notes. Raff built us a simple ordering page and mornings are calm now. Loaves sell out before we open.",
-    color:  '#DC5828',  // burnt orange
-    text:   '#FCD34D',  // sunflower
+    industry: 'Craft bakery',
+    region:   'United Kingdom',
+    before:   'Pre-orders on sticky notes.',
+    after:    'One clean ordering page and a stock-alert flow. Loaves sell out before opening. Mornings feel like a bakery again, not a warzone of DMs and post-its.',
+    metric:   '3× online orders',
+    color:  '#DC5828',
+    text:   '#FCD34D',
     accent: '#0E3B2A',
   },
   {
-    name: 'Aanya Verma',
-    company: 'Still Water',
-    role: 'Studio Owner',
-    location: 'Brooklyn, NY',
-    industry: 'Yoga',
-    metric: '+70% retention',
-    quote: "I was spending nights chasing class signups and reminders. Raff built me a system that does it quietly in the background. I just teach now.",
-    color:  '#1B4D5A',  // deep teal
-    text:   '#F4E4C1',  // cream
+    industry: 'Landscaping company',
+    region:   'Australia',
+    before:   'Three-day quote turnaround.',
+    after:    'A templated quoting engine and a CRM pipeline built for the field. Quotes now go out in three minutes. Close rate doubled — same crew, same trucks.',
+    metric:   '2× close rate',
+    color:  '#1B4D5A',
+    text:   '#F4E4C1',
     accent: '#DC5828',
   },
   {
-    name: 'Esme Hartwell',
-    company: 'North Loom',
-    role: 'Founder',
-    location: 'Santa Fe, NM',
-    industry: 'Jewelry',
-    metric: '+90% online sales',
-    quote: "My old site felt like a craft fair table. Raff rebuilt it so it feels like the jewelry — quiet, considered, expensive. Sales nearly doubled in two months.",
-    color:  '#C97B91',  // dusty rose
-    text:   '#3A0F1A',  // wine
+    industry: 'Handmade jewelry brand',
+    region:   'Latin America',
+    before:   'A site that looked cheaper than the work.',
+    after:    'Rebuilt to match the craft — quiet, considered, expensive. Traffic finally converts. Sales nearly doubled in two months without a single new ad dollar.',
+    metric:   '+90% online sales',
+    color:  '#C97B91',
+    text:   '#3A0F1A',
     accent: '#F4E4C1',
   },
 ]
@@ -122,10 +113,10 @@ const Face = ({ children, color, rotated, style }) => (
   </div>
 )
 
-// ─── Front of card (the bold identity) ──────────────────────
+// ─── Front of card — the "BEFORE" state ─────────────────────
 const Front = ({ t }) => (
   <Face color={t.color}>
-    {/* tiny label top */}
+    {/* tiny label row: BEFORE tag + status dot */}
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <span style={{
         fontFamily: 'var(--font-mono)',
@@ -135,7 +126,7 @@ const Front = ({ t }) => (
         color: t.text,
         opacity: 0.7,
       }}>
-        {t.industry}
+        Before · {t.industry}
       </span>
       <span style={{
         width: 8, height: 8, borderRadius: '50%',
@@ -144,7 +135,7 @@ const Front = ({ t }) => (
       }} />
     </div>
 
-    {/* HUGE company name — the chunky type the video uses */}
+    {/* The "before" pain in big chunky type */}
     <div style={{
       flex: 1,
       display: 'flex',
@@ -155,17 +146,17 @@ const Front = ({ t }) => (
       <h3 style={{
         fontFamily: 'var(--font-display)',
         fontWeight: 900,
-        fontSize: 'clamp(2.2rem, 4.4vw, 3.6rem)',
-        lineHeight: 0.95,
-        letterSpacing: '-0.03em',
+        fontSize: 'clamp(1.8rem, 3.4vw, 2.9rem)',
+        lineHeight: 1.02,
+        letterSpacing: '-0.02em',
         color: t.text,
         margin: 0,
       }}>
-        {t.company}
+        {t.before}
       </h3>
     </div>
 
-    {/* footer row */}
+    {/* footer: region + metric */}
     <div style={{
       display: 'flex',
       justifyContent: 'space-between',
@@ -181,7 +172,7 @@ const Front = ({ t }) => (
           color: t.text,
           opacity: 0.95,
         }}>
-          {t.name}
+          {t.region}
         </div>
         <div style={{
           fontFamily: 'var(--font-mono)',
@@ -192,7 +183,7 @@ const Front = ({ t }) => (
           opacity: 0.55,
           marginTop: '4px',
         }}>
-          {t.role} · {t.location}
+          the state we found them in
         </div>
       </div>
       <div style={{
@@ -208,30 +199,42 @@ const Front = ({ t }) => (
   </Face>
 )
 
-// ─── Back of card (the quote) ───────────────────────────────
+// ─── Back of card — the "AFTER" transformation ──────────────
 const Back = ({ t }) => (
   <Face color={t.color} rotated>
-    <span style={{
-      fontFamily: 'var(--font-display)',
-      fontStyle: 'italic',
-      fontSize: '3rem',
-      lineHeight: 0.7,
-      color: t.accent,
-      opacity: 0.85,
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '6px',
     }}>
-      &ldquo;
-    </span>
+      <span style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.62rem',
+        letterSpacing: '0.22em',
+        textTransform: 'uppercase',
+        color: t.accent,
+        opacity: 0.9,
+      }}>
+        After · {t.industry}
+      </span>
+      <span style={{
+        width: 8, height: 8, borderRadius: '50%',
+        background: t.accent,
+        boxShadow: `0 0 14px ${t.accent}88`,
+      }} />
+    </div>
 
     <p style={{
       flex: 1,
       fontFamily: 'var(--font-display)',
       fontStyle: 'italic',
-      fontSize: 'clamp(0.98rem, 1.35vw, 1.18rem)',
-      lineHeight: 1.45,
+      fontSize: 'clamp(0.98rem, 1.3vw, 1.15rem)',
+      lineHeight: 1.5,
       color: t.text,
-      margin: '8px 0 0',
+      margin: '10px 0 0',
     }}>
-      {t.quote}
+      {t.after}
     </p>
 
     <div style={{
@@ -249,7 +252,7 @@ const Back = ({ t }) => (
           fontSize: '0.92rem',
           color: t.text,
         }}>
-          {t.name}
+          {t.region}
         </div>
         <div style={{
           fontFamily: 'var(--font-mono)',
@@ -260,7 +263,7 @@ const Back = ({ t }) => (
           opacity: 0.55,
           marginTop: '3px',
         }}>
-          {t.company}
+          the transformation
         </div>
       </div>
       <div style={{
@@ -348,25 +351,29 @@ const TestimonialSection = () => {
       })
 
       // 3. ROW PARALLAX — each row drifts at a different rate while
-      //    the section moves through the viewport. Gives the "mould"
-      //    depth feel the user asked for.
-      const parallaxRates = [-60, 30]   // row 1 drifts up, row 2 drifts down
-      rowRefs.current.forEach((row, i) => {
-        if (!row) return
-        gsap.fromTo(row,
-          { y: -parallaxRates[i] / 2 },
-          {
-            y: parallaxRates[i] / 2,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top bottom',
-              end:   'bottom top',
-              scrub: 1,
-            },
-          }
-        )
-      })
+      //    the section moves through the viewport. Desktop-only —
+      //    on mobile it fights the natural scroll rhythm and feels
+      //    jittery on single-column layouts.
+      const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 900
+      if (isDesktop) {
+        const parallaxRates = [-60, 30]   // row 1 drifts up, row 2 drifts down
+        rowRefs.current.forEach((row, i) => {
+          if (!row) return
+          gsap.fromTo(row,
+            { y: -parallaxRates[i] / 2 },
+            {
+              y: parallaxRates[i] / 2,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top bottom',
+                end:   'bottom top',
+                scrub: 1,
+              },
+            }
+          )
+        })
+      }
 
     }, sectionRef)
 
@@ -432,7 +439,7 @@ const TestimonialSection = () => {
           color: 'rgba(245,242,236,0.4)',
           marginBottom: '18px',
         }}>
-          // testimonials
+          {'// transformations, not testimonials'}
         </p>
         <h2 style={{
           fontFamily: 'var(--font-display)',
@@ -443,14 +450,26 @@ const TestimonialSection = () => {
           color: 'var(--color-text-primary)',
           maxWidth: '900px',
         }}>
-          Real people.{' '}
+          What{' '}
           <em style={{
             fontStyle: 'italic',
             color: 'var(--color-accent)',
           }}>
-            Real shifts.
-          </em>
+            transformation
+          </em>{' '}
+          looks like.
         </h2>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize:   'clamp(0.98rem, 1.4vw, 1.15rem)',
+          color:      'var(--color-text-dim)',
+          maxWidth:   '620px',
+          marginTop:  '18px',
+          lineHeight: 1.6,
+        }}>
+          Six industries. Six quiet before-and-afters. No names, no logos — the
+          shape of the shift is what matters.
+        </p>
       </div>
 
       {/* card rows */}

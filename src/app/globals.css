@@ -40,6 +40,15 @@
   --color-accent-dim:   rgba(200, 244, 0, 0.12);
   --color-accent-glow:  rgba(200, 244, 0, 0.06);
 
+  /* --- Brand palette lifted from the reach logo ---
+     cream = the vanilla background of the wordmark
+     maroon = the letters themselves
+     ink    = a darker, non-competing text tone used on the cream nav */
+  --brand-cream:  #F1E7CD;
+  --brand-cream-2:#E9DDBB;
+  --brand-maroon: #6E1E2A;
+  --brand-ink:    #1A1214;
+
   /* --- Typography ---
      Font family CSS vars (--font-display, --font-mono, --font-body) are
      injected by next/font/google in app/layout.js — see Playfair_Display,
@@ -516,7 +525,9 @@ button {
 
 
 /* ============================================================
-   NAVBAR
+   NAVBAR — cream wordmark bar with a warm frosted-glass feel
+   The bar sits over a near-black hero, so a translucent cream
+   + backdrop-blur reads as glassmorphism without turning muddy.
    ============================================================ */
 .navbar {
   position: fixed;
@@ -528,25 +539,45 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-6);
   padding: 0 var(--space-8);
+  /* Dark glass — matches the overall aesthetic of the site.
+     The cream wordmark (transparent.png) pops against this. */
   background: rgba(18, 18, 18, 0.72);
   border-bottom: 1px solid rgba(200, 244, 0, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
 }
 
 .navbar-brand {
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
   color: var(--color-text-primary);
   white-space: nowrap;
+  min-width: 0;
 }
 
-.navbar-brand span {
-  color: var(--color-accent);
+.navbar-logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.navbar-brand-tag {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  padding-left: var(--space-4);
+  border-left: 1px solid rgba(200, 244, 0, 0.25);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .navbar-links {
@@ -588,13 +619,36 @@ button {
 }
 
 .navbar-cta {
-  padding: var(--space-3) var(--space-6) !important;
-  font-size: var(--text-xs) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--color-bg);
+  background: var(--color-accent);
+  border-radius: 4px;
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out);
+}
+
+.navbar-cta:hover {
+  background: #d4ff1a;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(200, 244, 0, 0.35);
+}
+
+@media (max-width: 1024px) {
+  .navbar-brand-tag { display: none; }
 }
 
 @media (max-width: 768px) {
-  .navbar { padding: 0 var(--space-6); }
+  .navbar { padding: 0 var(--space-6); gap: var(--space-4); }
   .navbar-links { display: none; }
+  .navbar-logo { height: 40px; }
 }
 
 
@@ -684,6 +738,10 @@ button {
   .package-expanded {
     grid-template-columns: 1fr !important;
   }
+
+  .tlt-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* Hero mascot: shrink and dim on phones so it doesn't fight the headline */
@@ -763,6 +821,10 @@ button {
 
 .navbar-mobile-menu a:hover {
   color: var(--color-accent);
+}
+
+.navbar-mobile-cta {
+  color: var(--color-accent) !important;
 }
 
 @media (max-width: 768px) {

@@ -17,6 +17,7 @@ import HowIHelpSection   from '@/components/sections/HowIHelpSection'
 import PhilosophySection from '@/components/sections/PhilosophySection'
 import PackagesSection   from '@/components/sections/PackagesSection'
 import TestimonialSection from '@/components/sections/TestimonialSection'
+import FAQSection        from '@/components/sections/FAQSection'
 import CTASection        from '@/components/sections/CTASection'
 
 const HomePage = () => {
@@ -28,6 +29,7 @@ const HomePage = () => {
       <PhilosophySection />
       <PackagesSection />
       <TestimonialSection />
+      <FAQSection />
       <CTASection />
     </>
   )

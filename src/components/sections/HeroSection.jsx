@@ -29,11 +29,13 @@ gsap.registerPlugin(ScrollTrigger)
 // ─── CONTENT — edit your copy here ──────────────────────────
 
 const HEADLINE_LINES = [
-  ['Your', 'business'],
-  ["isn't", { word: 'broken.', highlight: true, altFont: true }],
-  ["It's", 'just', 'missing'],
-  ['a', { word: 'system.', altFont: true }],
+  ['The', { word: 'transformation', altFont: true }],
+  ['every', 'business', 'deserves,'],
+  ['and', 'needs.'],
 ]
+
+const SUBHEADLINE_LEAD = `You didn't build a business to babysit it.`
+const SUBHEADLINE_TAIL = `A successful owner works ON the business, not IN it. That takes proper research, analysis, strategy, and the tech systems to make it possible.`
 
 const SUBLINE  = `[ not an agency. an engineer who gives a damn. ]`
 const CTA_TEXT = `→ let's diagnose your business`
@@ -46,11 +48,13 @@ const MASCOT_LABEL = `Heyya fellas, I am Raff`
 const HeroSection = () => {
   const sectionRef   = useRef(null)
   const spotlightRef = useRef(null)
-  const headlineRef  = useRef(null)
-  const sublineRef   = useRef(null)
+  const headlineRef    = useRef(null)
+  const subheadlineRef = useRef(null)
+  const sublineRef     = useRef(null)
   const ctaRef       = useRef(null)
   const mascotRef    = useRef(null)
   const wordRefs     = useRef([])
+  const subWordRefs  = useRef([])
 
   // ─── 1. Cursor Spotlight Effect (rAF-throttled, no GSAP) ────
   useEffect(() => {
@@ -82,8 +86,9 @@ const HeroSection = () => {
 
   // ─── 2. Word-by-word headline reveal on load ────────────────
   useEffect(() => {
-    const words  = wordRefs.current.filter(Boolean)
-    const mascot = mascotRef.current
+    const words    = wordRefs.current.filter(Boolean)
+    const subWords = subWordRefs.current.filter(Boolean)
+    const mascot   = mascotRef.current
 
     const tl = gsap.timeline({ delay: 0.3 })
 
@@ -91,10 +96,16 @@ const HeroSection = () => {
       { y: 60, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', stagger: 0.08 }
     )
+    // Subheadline: same word-by-word reveal as headline, tighter stagger
+    .fromTo(subWords,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.45, ease: 'power2.out', stagger: 0.025 },
+      '-=0.4'
+    )
     .fromTo(sublineRef.current,
       { opacity: 0, y: 20 },
       { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-      '-=0.2'
+      '-=0.3'
     )
     .fromTo(ctaRef.current,
       { opacity: 0, y: 20 },
@@ -144,15 +155,30 @@ const HeroSection = () => {
         defaults: { ease: 'none', force3D: true },
       })
 
-      tl.to(headline, {
-        scale:           0.45,
-        transformOrigin: 'top left',
-        opacity:         0.3,
-      }, 0)
-      .to(sublineRef.current, {
-        opacity: 0,
-        y:       -30,
-      }, 0)
+      // Headline shrinks + drifts up-left, sub-elements fade out.
+      // Every property uses explicit fromTo values so the scrub
+      // reverses cleanly when the user scrolls back — no stuck
+      // invisible elements this time.
+      tl.fromTo(headline,
+        { scale: 1,    opacity: 1   },
+        { scale: 0.55, opacity: 0.6, transformOrigin: 'top left' },
+        0
+      )
+      .fromTo(subheadlineRef.current,
+        { y: 0,  opacity: 1 },
+        { y: -40, opacity: 0 },
+        0
+      )
+      .fromTo(sublineRef.current,
+        { y: 0,  opacity: 1 },
+        { y: -50, opacity: 0 },
+        0
+      )
+      .fromTo(ctaRef.current,
+        { y: 0,  opacity: 1 },
+        { y: -60, opacity: 0 },
+        0
+      )
       .to(mascot, {
         scale: 1.9,
         x:     -30,
@@ -299,11 +325,16 @@ const HeroSection = () => {
       }}>
 
         <p className="section-label" style={{ marginBottom: 'var(--space-8)' }}>
-          {'// the world\'s first business engineering studio'}
+          {'// an agency exclusively for business owners'}
         </p>
 
         {/* ── Headline ──────────────────────────────────────── */}
-        <div ref={headlineRef} className="hero-headline">
+        {/* Rendered as <h1> so it acts as the page's SEO heading. */}
+        <h1
+          ref={headlineRef}
+          className="hero-headline"
+          style={{ fontWeight: 'inherit', fontSize: 'inherit', margin: 0 }}
+        >
           {HEADLINE_LINES.map((line, lineIdx) => (
             <div
               key={lineIdx}
@@ -349,6 +380,59 @@ const HeroSection = () => {
               })}
             </div>
           ))}
+        </h1>
+
+        {/* ── Subheadline — the emotional pairing to the headline ── */}
+        <div
+          ref={subheadlineRef}
+          className="hero-sub"
+          style={{
+            marginTop:  'var(--space-8)',
+            maxWidth:   '52ch',
+          }}
+        >
+          {/* Lead — small, mono, uppercase, accent-tinted. Word-split reveal. */}
+          <p style={{
+            fontFamily:    'var(--font-mono)',
+            fontSize:      'clamp(0.72rem, 0.95vw, 0.85rem)',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color:         'var(--color-accent)',
+            lineHeight:    1.5,
+            marginBottom:  'var(--space-3)',
+          }}>
+            {SUBHEADLINE_LEAD.split(' ').map((w, i) => (
+              <span
+                key={`sh-l-${i}`}
+                ref={el => (subWordRefs.current[i] = el)}
+                style={{ display: 'inline-block', marginRight: '0.35em', opacity: 0 }}
+              >
+                {w}
+              </span>
+            ))}
+          </p>
+          {/* Tail — quiet DM Sans body copy. Word-split reveal continues. */}
+          <p style={{
+            fontFamily:    'var(--font-body)',
+            fontSize:      'clamp(0.92rem, 1.15vw, 1.05rem)',
+            fontWeight:    300,
+            lineHeight:    1.65,
+            letterSpacing: '0.005em',
+            color:         'var(--color-text-dim)',
+          }}>
+            {(() => {
+              const leadCount = SUBHEADLINE_LEAD.split(' ').length
+              return SUBHEADLINE_TAIL.split(' ').map((w, i) => (
+                <span
+                  key={`sh-t-${i}`}
+                  ref={el => (subWordRefs.current[leadCount + i] = el)}
+                  style={{ display: 'inline-block', marginRight: '0.28em', opacity: 0 }}
+                >
+                  {w}
+                </span>
+              ))
+            })()}
+          </p>
         </div>
 
         {/* ── Subline ────────────────────────────────────────── */}
@@ -358,7 +442,7 @@ const HeroSection = () => {
           style={{
             fontSize:  'var(--text-base)',
             color:     'var(--color-text-dim)',
-            marginTop: 'var(--space-8)',
+            marginTop: 'var(--space-6)',
             opacity:   0,
           }}
         >
